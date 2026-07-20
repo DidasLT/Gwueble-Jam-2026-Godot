@@ -1,0 +1,32 @@
+extends Node
+
+signal infection_stage_changed(stage: int)
+signal player_died
+
+@export var time_to_death : float = 60.0  # 10 minutes in seconds
+var infection_level : float = 0.0           # 0.0 = healthy, 1.0 = dead
+var current_stage : int = 0
+var stage_thresholds : Array[float] = [0.25, 0.5, 0.75, 1.0]
+var is_dead : bool = false
+
+func _process(delta: float) -> void:
+	if is_dead:
+		return
+
+	infection_level += delta / time_to_death
+	infection_level = clamp(infection_level, 0.0, 1.0)
+
+	_check_stage()
+
+	if infection_level >= 1.0:
+		die()
+
+func _check_stage() -> void:
+	for i in range(stage_thresholds.size()):
+		if infection_level >= stage_thresholds[i] and current_stage <= i:
+			current_stage = i + 1
+			infection_stage_changed.emit(current_stage)
+
+func die() -> void:
+	is_dead = true
+	player_died.emit()

@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://45m72uyt1idn"]
+
+[ext_resource type="Script" uid="uid://b7ntdfx8d22yx" path="res://Scripts/InfectionManager.gd" id="1_4lfdh"]
+
+[node name="Node" type="Node" unique_id=1705530513]
+script = ExtResource("1_4lfdh")

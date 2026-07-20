@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://dgxdcpqh742oq" path="res://Scenes/item.tscn" id="3_8gbba"]
 [ext_resource type="Resource" uid="uid://11y6puk3kke5" path="res://Lighter.tres" id="4_jjvhh"]
 [ext_resource type="Texture2D" uid="uid://ci01gbcgffhf0" path="res://Textures/lighter_inventory_and_pickup.png" id="5_kry3j"]
+[ext_resource type="PackedScene" uid="uid://45m72uyt1idn" path="res://Scenes/InfectionManager.tscn" id="6_21xkr"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jjvhh"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -86,3 +87,5 @@ item_data = ExtResource("4_jjvhh")
 transform = Transform3D(0.675, 0, 0, 0, 0.675, 0, 0, 0, 0.675, 0, -0.09763861, 0)
 billboard = 1
 texture = ExtResource("5_kry3j")
+
+[node name="Node" parent="." unique_id=1705530513 instance=ExtResource("6_21xkr")]

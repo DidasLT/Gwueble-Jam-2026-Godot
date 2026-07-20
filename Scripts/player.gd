@@ -45,6 +45,8 @@ func pickup_item(item: Item) -> void:
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	camera_start_y = camera.position.y
+	InfectionManager.infection_stage_changed.connect(_on_stage_changed)
+	InfectionManager.player_died.connect(_on_died)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
@@ -124,6 +126,25 @@ func _apply_item_state() -> void:
 
 	if equipped_item.use_sound:
 		pass
+
+func _on_stage_changed(stage: int) -> void:
+	match stage:
+		1:
+			pass # subtle changes
+		2:
+			pass # more noticeable
+		3:
+			walk_speed *= 0.8
+			sneak_speed *= 0.8
+			walk_bob_amplitude *= 1.5
+			sneak_bob_amplitude *= 1.5
+		4:
+			pass # near-death effects
+
+func _on_died() -> void:
+	get_tree().paused = true
+	# show death/game over screen here
+
 
 func _check_for_interactable() -> void:
 	var space_state = get_world_3d().direct_space_state
