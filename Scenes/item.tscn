@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://dgxdcpqh742oq"]
+
+[ext_resource type="Script" uid="uid://ct7j6se30d8m6" path="res://Scripts/ItemPickup.gd" id="1_ys0gr"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_g4v7s"]
+radius = 0.3983097
+
+[node name="Item" type="StaticBody3D" unique_id=1953862076 groups=["interactable"]]
+script = ExtResource("1_ys0gr")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1666608809]
+shape = SubResource("SphereShape3D_g4v7s")

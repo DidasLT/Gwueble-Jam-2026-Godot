@@ -2,17 +2,21 @@
 
 [ext_resource type="Material" uid="uid://bk7wr877hbxn3" path="res://Textures/prototype.tres" id="1_jjgbg"]
 [ext_resource type="PackedScene" uid="uid://bgumj16d7s0rb" path="res://Scenes/player.tscn" id="2_bo1nx"]
+[ext_resource type="PackedScene" uid="uid://dgxdcpqh742oq" path="res://Scenes/item.tscn" id="3_8gbba"]
+[ext_resource type="Resource" uid="uid://11y6puk3kke5" path="res://Lighter.tres" id="4_jjvhh"]
+[ext_resource type="Texture2D" uid="uid://ci01gbcgffhf0" path="res://Textures/lighter_inventory_and_pickup.png" id="5_kry3j"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_8gbba"]
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jjvhh"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
 ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+energy_multiplier = 0.65
 
-[sub_resource type="Sky" id="Sky_jjvhh"]
-sky_material = SubResource("ProceduralSkyMaterial_8gbba")
+[sub_resource type="Sky" id="Sky_kry3j"]
+sky_material = SubResource("ProceduralSkyMaterial_jjvhh")
 
-[sub_resource type="Environment" id="Environment_kry3j"]
+[sub_resource type="Environment" id="Environment_21xkr"]
 background_mode = 2
-sky = SubResource("Sky_jjvhh")
+sky = SubResource("Sky_kry3j")
 glow_enabled = true
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_g4v7s"]
@@ -27,12 +31,13 @@ albedo_color = Color(0.16898826, 0.062337354, 0, 1)
 
 [node name="Main" type="Node3D" unique_id=2129668421]
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=681512968]
-transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
-shadow_enabled = true
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=705073672]
+environment = SubResource("Environment_21xkr")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=962505012]
-environment = SubResource("Environment_kry3j")
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=2065550519]
+transform = Transform3D(-0.8461931, -0.4614845, 0.26643816, 0, 0.49999997, 0.86602545, -0.5328764, 0.73282474, -0.4230965, 0, 0, 0)
+light_color = Color(0.4566366, 0.416137, 0.37861753, 1)
+shadow_enabled = true
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=328098677]
 
@@ -72,3 +77,12 @@ material = SubResource("StandardMaterial3D_bo1nx")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.20425367, 0.6806519, 6.6931553)
 size = Vector3(1.2912083, 0.060409546, 2.305893)
 material = SubResource("StandardMaterial3D_bo1nx")
+
+[node name="Lighter" parent="." unique_id=1953862076 instance=ExtResource("3_8gbba")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.16190767, 1.0308566, 6.4200697)
+item_data = ExtResource("4_jjvhh")
+
+[node name="Sprite3D" type="Sprite3D" parent="Lighter" unique_id=1366213060]
+transform = Transform3D(0.675, 0, 0, 0, 0.675, 0, 0, 0, 0.675, 0, -0.09763861, 0)
+billboard = 1
+texture = ExtResource("5_kry3j")

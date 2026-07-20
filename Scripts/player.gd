@@ -4,28 +4,43 @@ var speed : float
 
 #player movement
 @export var look_sensitivity : float = 0.005
-@export var walk_speed = 5.0
-@export var sneak_speed = 2.0
-@export var acceleration = 60.0
-@export var air_control = 5.0
-@export var air_ressistance = 2.0
+@export var walk_speed: float = 5.0
+@export var sneak_speed: float = 2.0
+@export var acceleration: float = 60.0
+@export var air_control: float = 5.0
+@export var air_ressistance: float = 2.0
 
+#bobbing
 @export var bob_amplitude : float = 0.08
 @export var bob_speed : float
-
 @export var walk_bob_amplitude : float = 0.08
 @export var sneak_bob_amplitude : float = 0.05
-
 @export var walk_bob_speed : float = 8.0
 @export var sneak_bob_speed : float = 3.0
 
 var bob_time : float = 0.0
 var camera_start_y : float
 
+var equipped_item : Item = null
+var item_active : bool = false
 
+#animation
+@export var sprite_frames : SpriteFrames
+@export var anim_off : String = "idle"
+@export var anim_on : String = "lit"
 
+@onready var item_light = $Head/Camera3D/Sprite3D/OmniLight3D
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
+@onready var hand_sprite = $Head/Camera3D/Sprite3D
+
+func pickup_item(item: Item) -> void:
+	equipped_item = item
+	item_active = false
+	hand_sprite.texture = item.texture_off
+	hand_sprite.visible = true
+	item_light.visible = false
+
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -72,6 +87,15 @@ func _physics_process(delta: float) -> void:
 		velocity.z = horizontal_velocity.z
 
 	move_and_slide()
+	
+	_check_for_interactable()
+	
+	if Input.is_action_just_pressed("item_use") and equipped_item and equipped_item.is_toggleable:
+		item_active = not item_active
+		_apply_item_state()
+	
+	if Input.is_action_just_pressed("interact") and current_interactable:
+		current_interactable.interact(self)
 
 	# head bob
 	if is_on_floor() and horizontal_velocity.length() > 0.2:
@@ -79,3 +103,37 @@ func _physics_process(delta: float) -> void:
 		camera.position.y = camera_start_y + sin(bob_time) * bob_amplitude
 	else:
 		camera.position.y = lerp(camera.position.y, camera_start_y, delta * 5.0)
+		
+
+@export var interact_range : float = 3.0
+var current_interactable = null
+
+var held_item : String = ""
+
+
+func _apply_item_state() -> void:
+	hand_sprite.texture = equipped_item.texture_on if item_active else equipped_item.texture_off
+
+	if equipped_item.has_light:
+		item_light.visible = item_active
+		item_light.light_color = equipped_item.light_color
+		item_light.light_energy = equipped_item.light_energy
+		item_light.omni_range = equipped_item.light_range
+	else:
+		item_light.visible = false
+
+	if equipped_item.use_sound:
+		pass
+
+func _check_for_interactable() -> void:
+	var space_state = get_world_3d().direct_space_state
+	var from = camera.global_position
+	var to = from - camera.global_transform.basis.z * interact_range
+	var query = PhysicsRayQueryParameters3D.create(from, to)
+	query.exclude = [self]
+	var result = space_state.intersect_ray(query)
+
+	if result and result.collider.is_in_group("interactable"):
+		current_interactable = result.collider
+	else:
+		current_interactable = null

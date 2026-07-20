@@ -1,14 +1,31 @@
 [gd_scene format=3 uid="uid://bgumj16d7s0rb"]
 
 [ext_resource type="Script" uid="uid://do6ydhya742du" path="res://Scripts/player.gd" id="1_v0iea"]
+[ext_resource type="SpriteFrames" uid="uid://bfmmtbc0hftpv" path="res://lighterAnim.tres" id="2_cvnsp"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_g4v7s"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1agnw"]
 
+[sub_resource type="Animation" id="Animation_6t5aa"]
+length = 0.001
+
+[sub_resource type="Animation" id="Animation_vgqql"]
+resource_name = "lightOff"
+
+[sub_resource type="Animation" id="Animation_fkybt"]
+resource_name = "lightOn"
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_x3wgy"]
+_data = {
+&"RESET": SubResource("Animation_6t5aa"),
+&"lightOff": SubResource("Animation_vgqql"),
+&"lightOn": SubResource("Animation_fkybt")
+}
+
 [node name="Player" type="CharacterBody3D" unique_id=1798834006]
-visible = false
 script = ExtResource("1_v0iea")
+sprite_frames = ExtResource("2_cvnsp")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1669634309]
 mesh = SubResource("CapsuleMesh_g4v7s")
@@ -21,3 +38,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Head" unique_id=252651760]
 current = true
+
+[node name="RayCast3D" type="RayCast3D" parent="Head/Camera3D" unique_id=750789611]
+target_position = Vector3(0, 0, -3)
+
+[node name="Sprite3D" type="Sprite3D" parent="Head/Camera3D" unique_id=1367960755]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0.72304195, -0.34532452, -0.9843031)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Head/Camera3D/Sprite3D" unique_id=1879819679]
+transform = Transform3D(3.333333, 0, 0, 0, 3.333333, 0, 0, 0, 3.333333, -1.2860627, 1.0040772, 0.97738457)
+visible = false
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=2131224283]
+libraries/ = SubResource("AnimationLibrary_x3wgy")

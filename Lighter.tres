@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Item" format=3 uid="uid://11y6puk3kke5"]
+
+[ext_resource type="Script" uid="uid://bcmncbrkwmqnn" path="res://Scripts/item_data.gd" id="1_ncdj8"]
+[ext_resource type="Texture2D" uid="uid://hupfjdsrjvhq" path="res://Textures/idle_lighter_off_01.png" id="2_rxy6m"]
+[ext_resource type="Texture2D" uid="uid://bm7er55vpk251" path="res://Textures/idle_lighter_on_01.png" id="3_2x562"]
+
+[resource]
+script = ExtResource("1_ncdj8")
+item_name = "Lighter"
+texture_off = ExtResource("2_rxy6m")
+texture_on = ExtResource("3_2x562")
+is_toggleable = true
+has_light = true
+metadata/_custom_type_script = "uid://bcmncbrkwmqnn"

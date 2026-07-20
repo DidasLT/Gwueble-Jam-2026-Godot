@@ -1,0 +1,23 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://bfmmtbc0hftpv"]
+
+[ext_resource type="Texture2D" uid="uid://hupfjdsrjvhq" path="res://Textures/idle_lighter_off_01.png" id="1_x8l2h"]
+[ext_resource type="Texture2D" uid="uid://bm7er55vpk251" path="res://Textures/idle_lighter_on_01.png" id="2_cewfa"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_x8l2h")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_cewfa")
+}],
+"loop": 1,
+"name": &"lit",
+"speed": 5.0
+}]
