@@ -1,6 +1,8 @@
 extends CharacterBody3D
 var input_direction : Vector2
 var speed : float
+
+#player movement
 @export var look_sensitivity : float = 0.005
 @export var walk_speed = 5.0
 @export var sneak_speed = 2.0
@@ -19,6 +21,8 @@ var speed : float
 
 var bob_time : float = 0.0
 var camera_start_y : float
+
+
 
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
