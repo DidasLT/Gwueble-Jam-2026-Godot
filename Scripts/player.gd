@@ -18,35 +18,63 @@ var speed : float
 @export var walk_bob_speed : float = 8.0
 @export var sneak_bob_speed : float = 3.0
 
+@export var hand_bob_amplitude : float = 0.02
+@export var hand_bob_speed : float = 4.0
+@export var hand_sway_amount : float = 0.01
+
+
+var hand_bob_time : float = 0.0
+var hand_default_pos : Vector3
+
 var bob_time : float = 0.0
 var camera_start_y : float
 
 var equipped_item : Item = null
 var item_active : bool = false
+var is_dying : bool = false
+
+var death_start_head_y : float = 0.0
+var death_target_head_y : float = 0.0
 
 #animation
 @export var sprite_frames : SpriteFrames
-@export var anim_off : String = "idle"
-@export var anim_on : String = "lit"
+@export var death_head_drop : float = 0.1
+@export var min_head_height : float = 0.0
 
-@onready var item_light = $Head/Camera3D/Sprite3D/OmniLight3D
+@onready var item_light = $Head/OmniLight3D
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
 @onready var hand_sprite = $Head/Camera3D/Sprite3D
+@onready var death_overlay = $DeathScreen/ColorRect
+@onready var death_screen = $DeathScreen
+@onready var death_sound = $DeathSound
+@onready var item_pickup: AudioStreamPlayer = $ItemPickup
+@onready var prompt_label = $PromptUI/PromptLabel
+@onready var use_sfx = $UseSFX
+@onready var effects_material = $EffectsLayer/EffectsRect.material
+@onready var effectLayer = $EffectsLayer
 
 func pickup_item(item: Item) -> void:
 	equipped_item = item
 	item_active = false
-	hand_sprite.texture = item.texture_off
 	hand_sprite.visible = true
 	item_light.visible = false
+	item_pickup.play()
 
+func _on_hand_animation_finished() -> void:
+	if equipped_item and hand_sprite.animation == equipped_item.pickup_animation:
+		hand_sprite.play(equipped_item.idle_animation)
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	camera_start_y = camera.position.y
 	InfectionManager.infection_stage_changed.connect(_on_stage_changed)
 	InfectionManager.player_died.connect(_on_died)
+	hand_default_pos = hand_sprite.position
+	hand_sprite.visible = false
+
+func _process(delta: float) -> void:
+	effects_material.set_shader_parameter("infection_level", InfectionManager.infection_level)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
@@ -59,6 +87,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _physics_process(delta: float) -> void:
+	if is_dying:
+		_process_death(delta)
+		return
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 
@@ -91,10 +122,18 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	
 	_check_for_interactable()
+	_update_hand_bob(delta)
 	
 	if Input.is_action_just_pressed("item_use") and equipped_item and equipped_item.is_toggleable:
 		item_active = not item_active
-		_apply_item_state()
+		if item_active:
+			hand_sprite.play(equipped_item.on_animation)
+			if equipped_item.use_sound:
+				use_sfx.stream = equipped_item.use_sound
+				use_sfx.play()
+		else:
+			hand_sprite.play(equipped_item.idle_animation)
+		item_light.visible = item_active
 	
 	if Input.is_action_just_pressed("interact") and current_interactable:
 		current_interactable.interact(self)
@@ -105,7 +144,6 @@ func _physics_process(delta: float) -> void:
 		camera.position.y = camera_start_y + sin(bob_time) * bob_amplitude
 	else:
 		camera.position.y = lerp(camera.position.y, camera_start_y, delta * 5.0)
-		
 
 @export var interact_range : float = 3.0
 var current_interactable = null
@@ -141,10 +179,47 @@ func _on_stage_changed(stage: int) -> void:
 		4:
 			pass # near-death effects
 
-func _on_died() -> void:
-	get_tree().paused = true
-	# show death/game over screen here
+func _update_hand_bob(delta: float) -> void:
+	var horizontal_speed = Vector3(velocity.x, 0, velocity.z).length()
+	var is_moving = horizontal_speed > 0.2 and is_on_floor()
 
+	if is_moving:
+		hand_bob_time += delta * hand_bob_speed
+		var bob_offset = Vector3.ZERO
+		bob_offset.y = sin(hand_bob_time * 2.0) * hand_bob_amplitude
+		bob_offset.x = cos(hand_bob_time) * hand_sway_amount
+		hand_sprite.position = hand_default_pos.lerp(hand_default_pos + bob_offset, 1.0)
+	else:
+		hand_bob_time += delta * 1.5
+		var idle_offset = Vector3(0, sin(hand_bob_time) * 0.005, 0)
+		hand_sprite.position = hand_sprite.position.lerp(hand_default_pos + idle_offset, delta * 5.0)
+
+func _on_died() -> void:
+	is_dying = true
+	death_start_head_y = head.position.y
+	death_target_head_y = max(head.position.y - death_head_drop, min_head_height)
+	death_sound.play()
+	effectLayer.visible = false
+
+func _show_death_screen() -> void:
+	if death_screen_shown:
+		return
+	death_screen_shown = true
+	death_screen.visible = true
+	var tween = create_tween()
+	tween.tween_property(death_overlay, "modulate:a", 1.0, 2.0)
+
+func _process_death(delta: float) -> void:
+	# tilt camera sideways/down like collapsing
+	camera.rotation.z = lerp(camera.rotation.z, deg_to_rad(85), delta * 1.5)
+	camera.rotation.x = lerp(camera.rotation.x, deg_to_rad(-30), delta * 1.5)
+	head.position.y = lerp(head.position.y, head.position.y - 1.0, delta * 1.0)
+	hand_sprite.visible = false
+
+	if abs(camera.rotation.z - deg_to_rad(85)) < 0.05:
+		_show_death_screen()
+
+var death_screen_shown : bool = false
 
 func _check_for_interactable() -> void:
 	var space_state = get_world_3d().direct_space_state
@@ -156,5 +231,9 @@ func _check_for_interactable() -> void:
 
 	if result and result.collider.is_in_group("interactable"):
 		current_interactable = result.collider
+		var item_data = current_interactable.item_data
+		prompt_label.text = item_data.item_name + "\nPress E to pick up"
+		prompt_label.visible = true
 	else:
 		current_interactable = null
+		prompt_label.visible = false

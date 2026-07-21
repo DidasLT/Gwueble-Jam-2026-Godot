@@ -3,8 +3,8 @@ extends Node
 signal infection_stage_changed(stage: int)
 signal player_died
 
-@export var time_to_death : float = 60.0  # 10 minutes in seconds
-var infection_level : float = 0.0           # 0.0 = healthy, 1.0 = dead
+@export var time_to_death : float = 10.0
+var infection_level : float = 0.0
 var current_stage : int = 0
 var stage_thresholds : Array[float] = [0.25, 0.5, 0.75, 1.0]
 var is_dead : bool = false

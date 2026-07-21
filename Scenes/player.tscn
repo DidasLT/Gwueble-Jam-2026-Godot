@@ -2,32 +2,90 @@
 
 [ext_resource type="Script" uid="uid://do6ydhya742du" path="res://Scripts/player.gd" id="1_v0iea"]
 [ext_resource type="SpriteFrames" uid="uid://bfmmtbc0hftpv" path="res://lighterAnim.tres" id="2_cvnsp"]
+[ext_resource type="Texture2D" uid="uid://hupfjdsrjvhq" path="res://Textures/idle_lighter_off_01.png" id="3_3smsa"]
+[ext_resource type="Texture2D" uid="uid://b30uruai4ugsf" path="res://Textures/idle_lighterAnimt.png" id="3_x3wgy"]
+[ext_resource type="AudioStream" uid="uid://5yibscmpicur" path="res://Item_pickup.mp3" id="4_fkybt"]
+[ext_resource type="AudioStream" uid="uid://4hfvf6w4ngt7" path="res://chokeDeath.mp3" id="4_vgqql"]
+[ext_resource type="Theme" uid="uid://dir8matgs65dq" path="res://Text.tres" id="5_3smsa"]
+[ext_resource type="Shader" uid="uid://c6nbgm31yrir7" path="res://Scenes/Effects.gdshader" id="7_f1ek2"]
+[ext_resource type="FontFile" uid="uid://du1sd7rr3ytc4" path="res://VCR_OSD_MONO_1.001.ttf" id="8_8erm5"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_g4v7s"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1agnw"]
 
-[sub_resource type="Animation" id="Animation_6t5aa"]
-length = 0.001
+[sub_resource type="AtlasTexture" id="AtlasTexture_pu2lt"]
+atlas = ExtResource("3_3smsa")
+region = Rect2(0, 0, 180, 320)
 
-[sub_resource type="Animation" id="Animation_vgqql"]
-resource_name = "lightOff"
+[sub_resource type="AtlasTexture" id="AtlasTexture_3smsa"]
+atlas = ExtResource("3_x3wgy")
+region = Rect2(0, 0, 180, 320)
 
-[sub_resource type="Animation" id="Animation_fkybt"]
-resource_name = "lightOn"
+[sub_resource type="AtlasTexture" id="AtlasTexture_8erm5"]
+atlas = ExtResource("3_x3wgy")
+region = Rect2(180, 0, 180, 320)
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_x3wgy"]
-_data = {
-&"RESET": SubResource("Animation_6t5aa"),
-&"lightOff": SubResource("Animation_vgqql"),
-&"lightOn": SubResource("Animation_fkybt")
-}
+[sub_resource type="AtlasTexture" id="AtlasTexture_f1ek2"]
+atlas = ExtResource("3_x3wgy")
+region = Rect2(360, 0, 180, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tx1dd"]
+atlas = ExtResource("3_x3wgy")
+region = Rect2(540, 0, 180, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gymyn"]
+atlas = ExtResource("3_x3wgy")
+region = Rect2(720, 0, 180, 320)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fkybt"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pu2lt")
+}],
+"loop": 1,
+"name": &"idleLighter",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3smsa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8erm5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f1ek2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tx1dd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gymyn")
+}],
+"loop": 1,
+"name": &"litLighter",
+"speed": 2.0
+}]
+
+[sub_resource type="Theme" id="Theme_2uud2"]
+default_font = ExtResource("8_8erm5")
+default_font_size = 18
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g4v7s"]
+shader = ExtResource("7_f1ek2")
+shader_parameter/infection_level = 0.0
+shader_parameter/blur_amount = 0.008
+shader_parameter/vignette_strength = 1.5
+shader_parameter/vignette_color = Color(0.3, 0, 0, 1)
 
 [node name="Player" type="CharacterBody3D" unique_id=1798834006]
 script = ExtResource("1_v0iea")
 sprite_frames = ExtResource("2_cvnsp")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1669634309]
+cast_shadow = 0
 mesh = SubResource("CapsuleMesh_g4v7s")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1625427938]
@@ -42,12 +100,69 @@ current = true
 [node name="RayCast3D" type="RayCast3D" parent="Head/Camera3D" unique_id=750789611]
 target_position = Vector3(0, 0, -3)
 
-[node name="Sprite3D" type="Sprite3D" parent="Head/Camera3D" unique_id=1367960755]
-transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0.72304195, -0.34532452, -0.9843031)
+[node name="Sprite3D" type="AnimatedSprite3D" parent="Head/Camera3D" unique_id=1632606331]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0.57352144, -0.34532452, -0.6843467)
+shaded = true
+sprite_frames = SubResource("SpriteFrames_fkybt")
+animation = &"idleLighter"
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Head/Camera3D/Sprite3D" unique_id=1879819679]
-transform = Transform3D(3.333333, 0, 0, 0, 3.333333, 0, 0, 0, 3.333333, -1.2860627, 1.0040772, 0.97738457)
+[node name="OmniLight3D" type="OmniLight3D" parent="Head" unique_id=1879819679]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1877026, -0.32095587, -0.5131495)
+visible = false
+light_color = Color(0.94509804, 0.654902, 0, 1)
+omni_range = 8.195
+omni_attenuation = 0.406
+
+[node name="PromptUI" type="CanvasLayer" parent="." unique_id=2119018297]
+
+[node name="PromptLabel" type="Label" parent="PromptUI" unique_id=429266140]
+offset_left = 894.0
+offset_top = 502.0
+offset_right = 1103.0
+offset_bottom = 605.0
+theme = SubResource("Theme_2uud2")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DeathScreen" type="CanvasLayer" parent="." unique_id=1322855625]
 visible = false
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=2131224283]
-libraries/ = SubResource("AnimationLibrary_x3wgy")
+[node name="ColorRect" type="ColorRect" parent="DeathScreen" unique_id=444430870]
+offset_left = -25.0
+offset_top = -47.0
+offset_right = 1940.0
+offset_bottom = 1100.0
+color = Color(0, 0, 0, 1)
+
+[node name="Label" type="Label" parent="DeathScreen/ColorRect" unique_id=429726834]
+layout_mode = 0
+offset_left = 644.0
+offset_top = 184.0
+offset_right = 1284.0
+offset_bottom = 290.0
+theme = ExtResource("5_3smsa")
+text = "You died..."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EffectsLayer" type="CanvasLayer" parent="." unique_id=1965722073]
+
+[node name="EffectsRect" type="ColorRect" parent="EffectsLayer" unique_id=2047383058]
+material = SubResource("ShaderMaterial_g4v7s")
+offset_left = -104.0
+offset_top = -91.0
+offset_right = 2105.0
+offset_bottom = 1129.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="ItemPickup" type="AudioStreamPlayer" parent="." unique_id=2130829684]
+stream = ExtResource("4_fkybt")
+volume_db = 3.0
+
+[node name="DeathSound" type="AudioStreamPlayer" parent="." unique_id=1297938844]
+stream = ExtResource("4_vgqql")
+pitch_scale = 0.86
+
+[node name="UseSFX" type="AudioStreamPlayer" parent="." unique_id=462159925]

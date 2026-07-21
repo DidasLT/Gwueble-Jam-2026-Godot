@@ -1,0 +1,7 @@
+[gd_resource type="Theme" format=3 uid="uid://dir8matgs65dq"]
+
+[ext_resource type="FontFile" uid="uid://tidt7lw42r7b" path="res://Scenes/HomeVideoBold-R90Dv.ttf" id="1_q0ju8"]
+
+[resource]
+default_font = ExtResource("1_q0ju8")
+default_font_size = 18
