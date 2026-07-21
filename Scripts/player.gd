@@ -10,6 +10,10 @@ var speed : float
 @export var air_control: float = 5.0
 @export var air_ressistance: float = 2.0
 
+var death_angular_velocity : float = 0.0
+@export var fall_gravity : float = 4.0 
+@export var max_fall_angle : float = 90.0
+
 #bobbing
 @export var bob_amplitude : float = 0.08
 @export var bob_speed : float
@@ -22,6 +26,9 @@ var speed : float
 @export var hand_bob_speed : float = 4.0
 @export var hand_sway_amount : float = 0.01
 
+@export var inventory_size : int = 2
+var inventory : Array = [null, null]   # holds Item resources, null = empty slot
+var current_slot : int = 0             # which slot is "equipped"/held
 
 var hand_bob_time : float = 0.0
 var hand_default_pos : Vector3
@@ -53,14 +60,20 @@ var death_target_head_y : float = 0.0
 @onready var use_sfx = $UseSFX
 @onready var effects_material = $EffectsLayer/EffectsRect.material
 @onready var effectLayer = $EffectsLayer
+@onready var slot_icons = [$InventoryUI/Slot1Icon, $InventoryUI/Slot2Icon]
+@onready var flicker_timer = $LighterFlickerTimer
 
 func pickup_item(item: Item) -> void:
-	print("Picking up: ", item.item_name, " | pickup_animation: '", item.pickup_animation, "'")
-	equipped_item = item
-	item_active = false
-	hand_sprite.visible = true
-	hand_sprite.play(item.pickup_animation)
-	print("Currently playing: ", hand_sprite.animation)
+	var empty_slot = inventory.find(null)
+	if empty_slot != -1:
+		inventory[empty_slot] = item
+		current_slot = empty_slot
+	else:
+		# no empty slot, replace currently held item
+		inventory[current_slot] = item
+
+	_equip_current_slot()
+	_update_inventory_ui()
 
 	# normal equip flow for held items
 	equipped_item = item
@@ -79,8 +92,9 @@ func _ready() -> void:
 	InfectionManager.player_died.connect(_on_died)
 	hand_default_pos = hand_sprite.position
 	hand_sprite.visible = false
+	flicker_timer.timeout.connect(_on_flicker_check)
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	effects_material.set_shader_parameter("infection_level", InfectionManager.infection_level)
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -145,9 +159,19 @@ func _physics_process(delta: float) -> void:
 			hand_sprite.play(equipped_item.idle_animation)
 		item_light.visible = item_active
 	
+	
+	if Input.is_action_just_pressed("slot_1"):
+		current_slot = 0
+		_equip_current_slot()
+		_update_inventory_ui()   # <- make sure this is here too, so the highlight moves correctly
+	if Input.is_action_just_pressed("slot_2"):
+		current_slot = 1
+		_equip_current_slot()
+		_update_inventory_ui()   # <- and here
+	
 	if Input.is_action_just_pressed("interact") and current_interactable:
 		current_interactable.interact(self)
-
+	
 	# head bob
 	if is_on_floor() and horizontal_velocity.length() > 0.2:
 		bob_time += delta * bob_speed
@@ -161,18 +185,21 @@ var current_interactable = null
 var held_item : String = ""
 
 func _use_consumable() -> void:
-	var item = equipped_item
-	
+	var item = inventory[current_slot]
+	if item == null or not item.is_consumable:
+		return
+
 	if item.use_sound:
 		use_sfx.stream = item.use_sound
 		use_sfx.play()
-	
-	InfectionManager.reduce_infection(item.infection_relief)
-	
-	equipped_item = null
-	hand_sprite.visible = false
 
-func _on_consumable_finished(item: Item) -> void:
+	InfectionManager.reduce_infection(item.infection_relief)
+
+	inventory[current_slot] = null
+	_equip_current_slot()
+	_update_inventory_ui()
+
+func _on_consumable_finished(_item: Item) -> void:
 	hand_sprite.visible = false
 
 func _apply_item_state() -> void:
@@ -188,6 +215,13 @@ func _apply_item_state() -> void:
 
 	if equipped_item.use_sound:
 		pass
+
+func _on_flicker_check() -> void:
+	if item_active and equipped_item and equipped_item.is_toggleable:
+		if randf() < 0.01:  # 1% chance
+			item_active = false
+			hand_sprite.play(equipped_item.idle_animation)
+			item_light.visible = false
 
 func _on_stage_changed(stage: int) -> void:
 	match stage:
@@ -218,12 +252,30 @@ func _update_hand_bob(delta: float) -> void:
 		var idle_offset = Vector3(0, sin(hand_bob_time) * 0.005, 0)
 		hand_sprite.position = hand_sprite.position.lerp(hand_default_pos + idle_offset, delta * 5.0)
 
+func _equip_current_slot() -> void:
+	var itemCurrent = inventory[current_slot]
+	if itemCurrent == null:
+		hand_sprite.visible = false
+		equipped_item = null
+		return
+
+	equipped_item = itemCurrent
+	item_active = false
+	hand_sprite.visible = true
+	hand_sprite.play(itemCurrent.pickup_animation)
+
+func _update_inventory_ui() -> void:
+	for i in range(inventory.size()):
+		var item = inventory[i]
+		slot_icons[i].texture = item.icon if item else null
+		slot_icons[i].modulate = Color.WHITE if i == current_slot else Color(0.5, 0.5, 0.5)
+
 func _on_died() -> void:
 	is_dying = true
-	death_start_head_y = head.position.y
-	death_target_head_y = max(head.position.y - death_head_drop, min_head_height)
+	death_angular_velocity = 0.0
 	death_sound.play()
 	effectLayer.visible = false
+	hand_sprite.visible = false
 
 func _show_death_screen() -> void:
 	if death_screen_shown:
@@ -234,14 +286,15 @@ func _show_death_screen() -> void:
 	tween.tween_property(death_overlay, "modulate:a", 1.0, 2.0)
 
 func _process_death(delta: float) -> void:
-	# tilt camera sideways/down like collapsing
-	camera.rotation.z = lerp(camera.rotation.z, deg_to_rad(85), delta * 1.5)
-	camera.rotation.x = lerp(camera.rotation.x, deg_to_rad(-30), delta * 1.5)
-	head.position.y = lerp(head.position.y, head.position.y - 1.0, delta * 1.0)
-	hand_sprite.visible = false
-
-	if abs(camera.rotation.z - deg_to_rad(85)) < 0.05:
+	death_angular_velocity += fall_gravity * delta
+	camera.rotation.z += death_angular_velocity * delta
+	
+	var max_rad = deg_to_rad(max_fall_angle)
+	if camera.rotation.z >= max_rad:
+		camera.rotation.z = max_rad
 		_show_death_screen()
+		
+	head.position.y = lerp(head.position.y, death_target_head_y, delta * 2.0)
 
 var death_screen_shown : bool = false
 

@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="Item" format=3 uid="uid://bw55dcc85808m"]
 
+[ext_resource type="Texture2D" uid="uid://dlwu7vowcho1g" path="res://Textures/pillbottle.png" id="1_a2asr"]
 [ext_resource type="Script" uid="uid://bcmncbrkwmqnn" path="res://Scripts/item_data.gd" id="1_pkadu"]
 [ext_resource type="AudioStream" uid="uid://b61786muugxd1" path="res://swallowPill.mp3" id="2_lhjsl"]
 
@@ -8,5 +9,6 @@ script = ExtResource("1_pkadu")
 item_name = "Pill Bottle"
 pickup_animation = "BottleHold"
 use_sound = ExtResource("2_lhjsl")
+icon = ExtResource("1_a2asr")
 is_consumable = true
 metadata/_custom_type_script = "uid://bcmncbrkwmqnn"

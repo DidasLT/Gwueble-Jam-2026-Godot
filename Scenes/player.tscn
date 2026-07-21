@@ -155,6 +155,34 @@ text = "You died..."
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="InventoryUI" type="CanvasLayer" parent="." unique_id=847391552]
+
+[node name="Slot1Icon" type="TextureRect" parent="InventoryUI" unique_id=1862104810]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -126.0
+offset_top = -112.0
+offset_right = -28.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Slot2Icon" type="TextureRect" parent="InventoryUI" unique_id=1178497164]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -25.0
+offset_top = -133.0
+offset_right = 115.0
+grow_horizontal = 2
+grow_vertical = 0
+expand_mode = 1
+
 [node name="EffectsLayer" type="CanvasLayer" parent="." unique_id=1965722073]
 
 [node name="EffectsRect" type="ColorRect" parent="EffectsLayer" unique_id=2047383058]
@@ -176,3 +204,5 @@ stream = ExtResource("4_vgqql")
 pitch_scale = 0.86
 
 [node name="UseSFX" type="AudioStreamPlayer" parent="." unique_id=462159925]
+
+[node name="LighterFlickerTimer" type="Timer" parent="." unique_id=2108438216]

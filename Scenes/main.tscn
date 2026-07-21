@@ -32,6 +32,8 @@ orientation = 1
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bo1nx"]
 albedo_color = Color(0.16898826, 0.062337354, 0, 1)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f0j68"]
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_21xkr"]
 shading_mode = 0
 
@@ -87,6 +89,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.20425367, 0.6806519, 6.6931
 size = Vector3(1.2912083, 0.060409546, 2.305893)
 material = SubResource("StandardMaterial3D_bo1nx")
 
+[node name="Item" parent="." unique_id=770430684 instance=ExtResource("3_8gbba")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.21422625, 1.0448403, 5.562788)
+item_data = ExtResource("7_344ge")
+
+[node name="Sprite3D" type="Sprite3D" parent="Item" unique_id=147042410]
+billboard = 1
+shaded = true
+texture_filter = 0
+texture = ExtResource("8_ynf5e")
+
 [node name="Lighter" parent="." unique_id=1953862076 instance=ExtResource("3_8gbba")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.16190767, 1.0308566, 4.915416)
 item_data = ExtResource("4_jjvhh")
@@ -110,11 +122,14 @@ size = Vector3(26.521591, 6.0323486, 1.3671265)
 
 [node name="CSGBox3D5" type="CSGBox3D" parent="CSGCombiner3D2" unique_id=952883782]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5021229, 2.9278114, 16.057127)
+material_override = ExtResource("1_jjgbg")
 size = Vector3(26.521591, 6.0323486, 1.3671265)
 
 [node name="CSGBox3D6" type="CSGBox3D" parent="CSGCombiner3D2" unique_id=723475504]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5021229, 5.4771585, 5.66844)
-size = Vector3(26.521591, 0.9336548, 22.1445)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 1.3295317, 5.5214987, 6.020338)
+material_override = ExtResource("1_jjgbg")
+size = Vector3(25.559597, 0.9336548, 19.593987)
+material = SubResource("StandardMaterial3D_f0j68")
 
 [node name="CSGBox3D4" type="CSGBox3D" parent="CSGCombiner3D2" unique_id=1909125197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.385641, 2.9278114, 5.8204303)
@@ -138,13 +153,3 @@ light_indirect_energy = 1.29
 light_volumetric_fog_energy = 1.035
 light_size = 0.099
 light_specular = 1.767
-
-[node name="Item" parent="." unique_id=770430684 instance=ExtResource("3_8gbba")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.21422625, 1.0448403, 5.562788)
-item_data = ExtResource("7_344ge")
-
-[node name="Sprite3D" type="Sprite3D" parent="Item" unique_id=147042410]
-billboard = 1
-shaded = true
-texture_filter = 0
-texture = ExtResource("8_ynf5e")
