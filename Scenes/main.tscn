@@ -6,6 +6,8 @@
 [ext_resource type="Resource" uid="uid://11y6puk3kke5" path="res://Lighter.tres" id="4_jjvhh"]
 [ext_resource type="Texture2D" uid="uid://ci01gbcgffhf0" path="res://Textures/lighter_inventory_and_pickup.png" id="5_kry3j"]
 [ext_resource type="PackedScene" uid="uid://45m72uyt1idn" path="res://Scenes/InfectionManager.tscn" id="6_21xkr"]
+[ext_resource type="Resource" uid="uid://bw55dcc85808m" path="res://Scenes/PillBottle.tres" id="7_344ge"]
+[ext_resource type="Texture2D" uid="uid://dlwu7vowcho1g" path="res://Textures/pillbottle.png" id="8_ynf5e"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jjvhh"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -93,6 +95,7 @@ item_data = ExtResource("4_jjvhh")
 transform = Transform3D(0.675, 0, 0, 0, 0.675, 0, 0, 0, 0.675, 0, -0.09763861, 0)
 billboard = 1
 shaded = true
+texture_filter = 0
 texture = ExtResource("5_kry3j")
 
 [node name="CSGCombiner3D2" type="CSGCombiner3D" parent="." unique_id=1304958451]
@@ -135,3 +138,13 @@ light_indirect_energy = 1.29
 light_volumetric_fog_energy = 1.035
 light_size = 0.099
 light_specular = 1.767
+
+[node name="Item" parent="." unique_id=770430684 instance=ExtResource("3_8gbba")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.21422625, 1.0448403, 5.562788)
+item_data = ExtResource("7_344ge")
+
+[node name="Sprite3D" type="Sprite3D" parent="Item" unique_id=147042410]
+billboard = 1
+shaded = true
+texture_filter = 0
+texture = ExtResource("8_ynf5e")

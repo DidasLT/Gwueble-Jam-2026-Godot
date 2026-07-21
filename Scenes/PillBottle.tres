@@ -1,7 +1,12 @@
 [gd_resource type="Resource" script_class="Item" format=3 uid="uid://bw55dcc85808m"]
 
 [ext_resource type="Script" uid="uid://bcmncbrkwmqnn" path="res://Scripts/item_data.gd" id="1_pkadu"]
+[ext_resource type="AudioStream" uid="uid://b61786muugxd1" path="res://swallowPill.mp3" id="2_lhjsl"]
 
 [resource]
 script = ExtResource("1_pkadu")
+item_name = "Pill Bottle"
+pickup_animation = "BottleHold"
+use_sound = ExtResource("2_lhjsl")
+is_consumable = true
 metadata/_custom_type_script = "uid://bcmncbrkwmqnn"

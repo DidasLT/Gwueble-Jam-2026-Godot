@@ -55,11 +55,18 @@ var death_target_head_y : float = 0.0
 @onready var effectLayer = $EffectsLayer
 
 func pickup_item(item: Item) -> void:
+	print("Picking up: ", item.item_name, " | pickup_animation: '", item.pickup_animation, "'")
 	equipped_item = item
 	item_active = false
 	hand_sprite.visible = true
-	item_light.visible = false
-	item_pickup.play()
+	hand_sprite.play(item.pickup_animation)
+	print("Currently playing: ", hand_sprite.animation)
+
+	# normal equip flow for held items
+	equipped_item = item
+	item_active = false
+	hand_sprite.visible = true
+	hand_sprite.play(item.pickup_animation)
 
 func _on_hand_animation_finished() -> void:
 	if equipped_item and hand_sprite.animation == equipped_item.pickup_animation:
@@ -92,7 +99,10 @@ func _physics_process(delta: float) -> void:
 		return
 	if not is_on_floor():
 		velocity += get_gravity() * delta
-
+		
+	if Input.is_action_just_pressed("item_use") and equipped_item and equipped_item.is_consumable:
+		_use_consumable()
+	
 	if Input.is_action_pressed("sneak") and is_on_floor():
 		speed = sneak_speed
 		bob_speed = sneak_bob_speed
@@ -150,6 +160,20 @@ var current_interactable = null
 
 var held_item : String = ""
 
+func _use_consumable() -> void:
+	var item = equipped_item
+	
+	if item.use_sound:
+		use_sfx.stream = item.use_sound
+		use_sfx.play()
+	
+	InfectionManager.reduce_infection(item.infection_relief)
+	
+	equipped_item = null
+	hand_sprite.visible = false
+
+func _on_consumable_finished(item: Item) -> void:
+	hand_sprite.visible = false
 
 func _apply_item_state() -> void:
 	hand_sprite.texture = equipped_item.texture_on if item_active else equipped_item.texture_off
