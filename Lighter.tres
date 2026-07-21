@@ -8,7 +8,7 @@
 script = ExtResource("1_ncdj8")
 item_name = "Lighter"
 idle_animation = "idleLighter"
-pickup_animation = "idleLighter"
+pickup_animation = "PickUp"
 on_animation = "litLighter"
 is_toggleable = true
 use_sound = ExtResource("2_f0j68")

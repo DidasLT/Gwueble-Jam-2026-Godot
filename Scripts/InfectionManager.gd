@@ -5,7 +5,7 @@ signal player_died
 
 
 
-@export var time_to_death : float = 30.0
+@export var time_to_death : float = 300.0
 var infection_level : float = 0.0
 var current_stage : int = 0
 var stage_thresholds : Array[float] = [0.25, 0.5, 0.75, 1.0]

@@ -7,7 +7,8 @@
 [resource]
 script = ExtResource("1_pkadu")
 item_name = "Pill Bottle"
-pickup_animation = "BottleHold"
+idle_animation = "BottleHold"
+pickup_animation = "PickUp"
 use_sound = ExtResource("2_lhjsl")
 icon = ExtResource("1_a2asr")
 is_consumable = true

@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://doulweg88fo4u" path="res://Textures/holding_biggerpill.png" id="3_tx1dd"]
 [ext_resource type="Texture2D" uid="uid://b30uruai4ugsf" path="res://Textures/idle_lighterAnimt.png" id="3_x3wgy"]
 [ext_resource type="AudioStream" uid="uid://5yibscmpicur" path="res://Item_pickup.mp3" id="4_fkybt"]
+[ext_resource type="Texture2D" uid="uid://bem2f1i3k6shi" path="res://Textures/picking_up_animation_sprite_01-Sheet-export.png" id="4_gymyn"]
 [ext_resource type="AudioStream" uid="uid://4hfvf6w4ngt7" path="res://chokeDeath.mp3" id="4_vgqql"]
 [ext_resource type="Theme" uid="uid://dir8matgs65dq" path="res://Text.tres" id="5_3smsa"]
 [ext_resource type="Shader" uid="uid://c6nbgm31yrir7" path="res://Scenes/Effects.gdshader" id="7_f1ek2"]
@@ -14,6 +15,46 @@
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_g4v7s"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1agnw"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ukyrk"]
+atlas = ExtResource("4_gymyn")
+region = Rect2(2880, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7dp3o"]
+atlas = ExtResource("4_gymyn")
+region = Rect2(2560, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h4iuc"]
+atlas = ExtResource("4_gymyn")
+region = Rect2(2240, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fd4e3"]
+atlas = ExtResource("4_gymyn")
+region = Rect2(1920, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qqcod"]
+atlas = ExtResource("4_gymyn")
+region = Rect2(1600, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_igrcy"]
+atlas = ExtResource("4_gymyn")
+region = Rect2(1280, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fs7ks"]
+atlas = ExtResource("4_gymyn")
+region = Rect2(960, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l6n3p"]
+atlas = ExtResource("4_gymyn")
+region = Rect2(640, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_olqyp"]
+atlas = ExtResource("4_gymyn")
+region = Rect2(0, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wpjfl"]
+atlas = ExtResource("4_gymyn")
+region = Rect2(320, 0, 320, 320)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pu2lt"]
 atlas = ExtResource("3_3smsa")
@@ -51,6 +92,41 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_ukyrk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7dp3o")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h4iuc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fd4e3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qqcod")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_igrcy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fs7ks")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l6n3p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_olqyp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wpjfl")
+}],
+"loop": 0,
+"name": &"PickUp",
+"speed": 15.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_pu2lt")
 }],
 "loop": 1,
@@ -75,7 +151,7 @@ animations = [{
 }],
 "loop": 1,
 "name": &"litLighter",
-"speed": 2.0
+"speed": 5.0
 }]
 
 [sub_resource type="Theme" id="Theme_2uud2"]
@@ -110,11 +186,11 @@ current = true
 target_position = Vector3(0, 0, -3)
 
 [node name="Sprite3D" type="AnimatedSprite3D" parent="Head/Camera3D" unique_id=1632606331]
-transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0.57352144, -0.34532452, -0.6843467)
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0.57352144, -0.20384514, -0.6843467)
 shaded = true
 texture_filter = 0
 sprite_frames = SubResource("SpriteFrames_fkybt")
-animation = &"idleLighter"
+animation = &"litLighter"
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Head" unique_id=1879819679]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1877026, -0.32095587, -0.5131495)

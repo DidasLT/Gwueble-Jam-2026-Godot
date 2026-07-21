@@ -27,8 +27,8 @@ var death_angular_velocity : float = 0.0
 @export var hand_sway_amount : float = 0.01
 
 @export var inventory_size : int = 2
-var inventory : Array = [null, null]   # holds Item resources, null = empty slot
-var current_slot : int = 0             # which slot is "equipped"/held
+var inventory : Array = [null, null]
+var current_slot : int = 0 
 
 var hand_bob_time : float = 0.0
 var hand_default_pos : Vector3
@@ -69,19 +69,17 @@ func pickup_item(item: Item) -> void:
 		inventory[empty_slot] = item
 		current_slot = empty_slot
 	else:
-		# no empty slot, replace currently held item
 		inventory[current_slot] = item
-
-	_equip_current_slot()
+	
+	_equip_current_slot(true)   # true = play pickup animation
 	_update_inventory_ui()
-
-	# normal equip flow for held items
+	
 	equipped_item = item
 	item_active = false
 	hand_sprite.visible = true
 	hand_sprite.play(item.pickup_animation)
 
-func _on_hand_animation_finished() -> void:
+func _on_hand_animation_finished() -> void: 
 	if equipped_item and hand_sprite.animation == equipped_item.pickup_animation:
 		hand_sprite.play(equipped_item.idle_animation)
 
@@ -93,6 +91,8 @@ func _ready() -> void:
 	hand_default_pos = hand_sprite.position
 	hand_sprite.visible = false
 	flicker_timer.timeout.connect(_on_flicker_check)
+	hand_sprite.animation_finished.connect(_on_hand_animation_finished)
+	print("Signal connected: ", hand_sprite.animation_finished.get_connections())
 
 func _process(_delta: float) -> void:
 	effects_material.set_shader_parameter("infection_level", InfectionManager.infection_level)
@@ -252,17 +252,21 @@ func _update_hand_bob(delta: float) -> void:
 		var idle_offset = Vector3(0, sin(hand_bob_time) * 0.005, 0)
 		hand_sprite.position = hand_sprite.position.lerp(hand_default_pos + idle_offset, delta * 5.0)
 
-func _equip_current_slot() -> void:
-	var itemCurrent = inventory[current_slot]
-	if itemCurrent == null:
+func _equip_current_slot(just_picked_up: bool = false) -> void:
+	var item = inventory[current_slot]
+	if item == null:
 		hand_sprite.visible = false
 		equipped_item = null
 		return
 
-	equipped_item = itemCurrent
+	equipped_item = item
 	item_active = false
 	hand_sprite.visible = true
-	hand_sprite.play(itemCurrent.pickup_animation)
+
+	if just_picked_up:
+		hand_sprite.play(item.pickup_animation)
+	else:
+		hand_sprite.play(item.idle_animation)
 
 func _update_inventory_ui() -> void:
 	for i in range(inventory.size()):
