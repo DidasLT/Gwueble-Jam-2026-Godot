@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://b27y655sngjdh"]
+
+[ext_resource type="Script" uid="uid://b28hjtx0vb6du" path="res://Scripts/monster.gd" id="1_xhoai"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yf5fn"]
+albedo_color = Color(0.77782416, 0.06890626, 4.813075e-07, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_g4v7s"]
+material = SubResource("StandardMaterial3D_yf5fn")
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_i44lo"]
+
+[node name="Monster" type="CharacterBody3D" unique_id=980809512]
+script = ExtResource("1_xhoai")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=414856210]
+mesh = SubResource("CapsuleMesh_g4v7s")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=419702996]
+shape = SubResource("CapsuleShape3D_i44lo")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1765866592]

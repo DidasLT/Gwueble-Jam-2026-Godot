@@ -3,8 +3,6 @@ extends Node
 signal infection_stage_changed(stage: int)
 signal player_died
 
-
-
 @export var time_to_death : float = 300.0
 var infection_level : float = 0.0
 var current_stage : int = 0
@@ -46,3 +44,11 @@ func _recalculate_stage() -> void:
 	if new_stage != current_stage:
 		current_stage = new_stage
 		infection_stage_changed.emit(current_stage)
+
+func apply_time_penalty(seconds: float) -> void:
+	infection_level += seconds / time_to_death
+	infection_level = clamp(infection_level, 0.0, 1.0)
+	_recalculate_stage()
+
+	if infection_level >= 1.0:
+		die()

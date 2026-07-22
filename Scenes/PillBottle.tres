@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://dlwu7vowcho1g" path="res://Textures/pillbottle.png" id="1_a2asr"]
 [ext_resource type="Script" uid="uid://bcmncbrkwmqnn" path="res://Scripts/item_data.gd" id="1_pkadu"]
-[ext_resource type="AudioStream" uid="uid://b61786muugxd1" path="res://swallowPill.mp3" id="2_lhjsl"]
+[ext_resource type="AudioStream" uid="uid://b61786muugxd1" path="res://Textures/swallowPill.mp3" id="2_lhjsl"]
 
 [resource]
 script = ExtResource("1_pkadu")

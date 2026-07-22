@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bcmncbrkwmqnn" path="res://Scripts/item_data.gd" id="1_ncdj8"]
 [ext_resource type="Texture2D" uid="uid://ci01gbcgffhf0" path="res://Textures/lighter_inventory_and_pickup.png" id="1_rxy6m"]
-[ext_resource type="AudioStream" uid="uid://b6nw765lrdfy7" path="res://lighterON.mp3" id="2_f0j68"]
+[ext_resource type="AudioStream" uid="uid://b6nw765lrdfy7" path="res://Textures/lighterON.mp3" id="2_f0j68"]
 
 [resource]
 script = ExtResource("1_ncdj8")

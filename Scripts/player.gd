@@ -5,6 +5,7 @@ var speed : float
 #player movement
 @export var look_sensitivity : float = 0.005
 @export var walk_speed: float = 5.0
+@export var sprint_speed: float = 7.0
 @export var sneak_speed: float = 2.0
 @export var acceleration: float = 60.0
 @export var air_control: float = 5.0
@@ -19,14 +20,24 @@ var death_angular_velocity : float = 0.0
 @export var bob_speed : float
 @export var walk_bob_amplitude : float = 0.08
 @export var sneak_bob_amplitude : float = 0.05
+@export var sprint_bob_amplitude : float = 0.1
 @export var walk_bob_speed : float = 8.0
 @export var sneak_bob_speed : float = 3.0
+@export var sprint_bob_speed : float = 10.0
 
-@export var hand_bob_amplitude : float = 0.02
-@export var hand_bob_speed : float = 4.0
+@export var hand_bob_amplitude : float
+@export var hand_bob_speed : float
 @export var hand_sway_amount : float = 0.01
 
+@export var sprint_hand_bob_amplitude : float = 0.03
+@export var sprint_hand_bob_speed : float = 6.0
+@export var sneak_hand_bob_amplitude : float = 0.01
+@export var sneak_hand_bob_speed : float = 2.0
+@export var walk_hand_bob_amplitude : float = 0.02
+@export var walk_hand_bob_speed : float = 4.0
+
 @export var inventory_size : int = 2
+
 var inventory : Array = [null, null]
 var current_slot : int = 0 
 
@@ -48,6 +59,9 @@ var death_target_head_y : float = 0.0
 @export var death_head_drop : float = 0.1
 @export var min_head_height : float = 0.0
 
+enum MoveState { SNEAK, WALK, SPRINT }
+var current_move_state : MoveState = MoveState.WALK
+
 @onready var item_light = $Head/OmniLight3D
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
@@ -62,6 +76,14 @@ var death_target_head_y : float = 0.0
 @onready var effectLayer = $EffectsLayer
 @onready var slot_icons = [$InventoryUI/Slot1Icon, $InventoryUI/Slot2Icon]
 @onready var flicker_timer = $LighterFlickerTimer
+@onready var timer_label = $TimerUI/TimerLabel
+
+var death_screen_shown : bool = false
+
+@export var interact_range : float = 3.0
+var current_interactable = null
+
+var held_item : String = ""
 
 func pickup_item(item: Item) -> void:
 	var empty_slot = inventory.find(null)
@@ -78,6 +100,7 @@ func pickup_item(item: Item) -> void:
 	item_active = false
 	hand_sprite.visible = true
 	hand_sprite.play(item.pickup_animation)
+	item_pickup.play()
 
 func _on_hand_animation_finished() -> void: 
 	if equipped_item and hand_sprite.animation == equipped_item.pickup_animation:
@@ -96,6 +119,7 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	effects_material.set_shader_parameter("infection_level", InfectionManager.infection_level)
+	_update_timer_ui()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
@@ -121,10 +145,23 @@ func _physics_process(delta: float) -> void:
 		speed = sneak_speed
 		bob_speed = sneak_bob_speed
 		bob_amplitude = sneak_bob_amplitude
+		hand_bob_amplitude = sneak_hand_bob_amplitude
+		hand_bob_speed = sneak_hand_bob_speed
+		current_move_state = MoveState.SNEAK
+	elif Input.is_action_pressed("sprint") and is_on_floor():
+		speed = sprint_speed
+		bob_speed = sprint_bob_speed
+		bob_amplitude = sprint_bob_amplitude
+		hand_bob_amplitude = sprint_hand_bob_amplitude
+		hand_bob_speed = sprint_hand_bob_speed
+		current_move_state = MoveState.SPRINT
 	else:
 		speed = walk_speed
 		bob_speed = walk_bob_speed
 		bob_amplitude = walk_bob_amplitude
+		hand_bob_amplitude = walk_hand_bob_amplitude
+		hand_bob_speed = walk_hand_bob_speed
+		current_move_state = MoveState.WALK
 
 	input_direction = Input.get_vector("left", "right", "forward", "Back")
 	var direction = (head.transform.basis * Vector3(input_direction.x, 0, input_direction.y)).normalized()
@@ -178,11 +215,6 @@ func _physics_process(delta: float) -> void:
 		camera.position.y = camera_start_y + sin(bob_time) * bob_amplitude
 	else:
 		camera.position.y = lerp(camera.position.y, camera_start_y, delta * 5.0)
-
-@export var interact_range : float = 3.0
-var current_interactable = null
-
-var held_item : String = ""
 
 func _use_consumable() -> void:
 	var item = inventory[current_slot]
@@ -274,6 +306,20 @@ func _update_inventory_ui() -> void:
 		slot_icons[i].texture = item.icon if item else null
 		slot_icons[i].modulate = Color.WHITE if i == current_slot else Color(0.5, 0.5, 0.5)
 
+func _update_timer_ui() -> void:
+	var time_remaining = InfectionManager.time_to_death * (1.0 - InfectionManager.infection_level)
+	var minutes = int(time_remaining) / 60
+	var seconds = int(time_remaining) % 60
+	timer_label.text = "%02d:%02d" % [minutes, seconds]
+	_on_bitten()
+	
+	timer_label.modulate = Color.WHITE.lerp(Color.RED, InfectionManager.infection_level)
+
+func _on_bitten() -> void:
+	var tween = create_tween()
+	tween.tween_property(timer_label, "scale", Vector2(1.3, 1.3), 0.1)
+	tween.tween_property(timer_label, "scale", Vector2(1.0, 1.0), 0.2)
+
 func _on_died() -> void:
 	is_dying = true
 	death_angular_velocity = 0.0
@@ -299,8 +345,6 @@ func _process_death(delta: float) -> void:
 		_show_death_screen()
 		
 	head.position.y = lerp(head.position.y, death_target_head_y, delta * 2.0)
-
-var death_screen_shown : bool = false
 
 func _check_for_interactable() -> void:
 	var space_state = get_world_3d().direct_space_state

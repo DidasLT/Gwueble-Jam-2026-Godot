@@ -1,16 +1,17 @@
 [gd_scene format=3 uid="uid://bgumj16d7s0rb"]
 
 [ext_resource type="Script" uid="uid://do6ydhya742du" path="res://Scripts/player.gd" id="1_v0iea"]
-[ext_resource type="SpriteFrames" uid="uid://bfmmtbc0hftpv" path="res://lighterAnim.tres" id="2_cvnsp"]
+[ext_resource type="SpriteFrames" uid="uid://bfmmtbc0hftpv" path="res://Textures/lighterAnim.tres" id="2_cvnsp"]
 [ext_resource type="Texture2D" uid="uid://hupfjdsrjvhq" path="res://Textures/idle_lighter_off_01.png" id="3_3smsa"]
 [ext_resource type="Texture2D" uid="uid://doulweg88fo4u" path="res://Textures/holding_biggerpill.png" id="3_tx1dd"]
 [ext_resource type="Texture2D" uid="uid://b30uruai4ugsf" path="res://Textures/idle_lighterAnimt.png" id="3_x3wgy"]
-[ext_resource type="AudioStream" uid="uid://5yibscmpicur" path="res://Item_pickup.mp3" id="4_fkybt"]
+[ext_resource type="AudioStream" uid="uid://5yibscmpicur" path="res://Textures/Item_pickup.mp3" id="4_fkybt"]
 [ext_resource type="Texture2D" uid="uid://bem2f1i3k6shi" path="res://Textures/picking_up_animation_sprite_01-Sheet-export.png" id="4_gymyn"]
-[ext_resource type="AudioStream" uid="uid://4hfvf6w4ngt7" path="res://chokeDeath.mp3" id="4_vgqql"]
-[ext_resource type="Theme" uid="uid://dir8matgs65dq" path="res://Text.tres" id="5_3smsa"]
-[ext_resource type="Shader" uid="uid://c6nbgm31yrir7" path="res://Scenes/Effects.gdshader" id="7_f1ek2"]
-[ext_resource type="FontFile" uid="uid://du1sd7rr3ytc4" path="res://VCR_OSD_MONO_1.001.ttf" id="8_8erm5"]
+[ext_resource type="AudioStream" uid="uid://4hfvf6w4ngt7" path="res://Textures/chokeDeath.mp3" id="4_vgqql"]
+[ext_resource type="Theme" uid="uid://dir8matgs65dq" path="res://Textures/Text.tres" id="5_3smsa"]
+[ext_resource type="Shader" uid="uid://c6nbgm31yrir7" path="res://Textures/Effects.gdshader" id="7_f1ek2"]
+[ext_resource type="Theme" uid="uid://bijq1jftnabn5" path="res://Textures/TextGame.tres" id="7_pu2lt"]
+[ext_resource type="FontFile" uid="uid://du1sd7rr3ytc4" path="res://Textures/VCR_OSD_MONO_1.001.ttf" id="8_8erm5"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_g4v7s"]
 
@@ -154,16 +155,16 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="Theme" id="Theme_2uud2"]
-default_font = ExtResource("8_8erm5")
-default_font_size = 18
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_g4v7s"]
 shader = ExtResource("7_f1ek2")
 shader_parameter/infection_level = 0.0
 shader_parameter/blur_amount = 0.008
 shader_parameter/vignette_strength = 1.5
 shader_parameter/vignette_color = Color(0.3, 0, 0, 1)
+
+[sub_resource type="Theme" id="Theme_ukyrk"]
+default_font = ExtResource("8_8erm5")
+default_font_size = 27
 
 [node name="Player" type="CharacterBody3D" unique_id=1798834006]
 script = ExtResource("1_v0iea")
@@ -206,7 +207,7 @@ offset_left = 894.0
 offset_top = 502.0
 offset_right = 1103.0
 offset_bottom = 605.0
-theme = SubResource("Theme_2uud2")
+theme = ExtResource("7_pu2lt")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -270,6 +271,16 @@ offset_bottom = 1129.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
+
+[node name="TimerUI" type="CanvasLayer" parent="." unique_id=1537132126]
+
+[node name="TimerLabel" type="Label" parent="TimerUI" unique_id=1548168591]
+offset_left = 83.0
+offset_top = 952.0
+offset_right = 262.0
+offset_bottom = 1016.0
+theme = SubResource("Theme_ukyrk")
+vertical_alignment = 2
 
 [node name="ItemPickup" type="AudioStreamPlayer" parent="." unique_id=2130829684]
 stream = ExtResource("4_fkybt")
