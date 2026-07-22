@@ -59,7 +59,7 @@ var death_target_head_y : float = 0.0
 @export var death_head_drop : float = 0.1
 @export var min_head_height : float = 0.0
 
-enum MoveState { SNEAK, WALK, SPRINT }
+enum MoveState { WALK, SNEAK, SPRINT }
 var current_move_state : MoveState = MoveState.WALK
 
 @onready var item_light = $Head/OmniLight3D

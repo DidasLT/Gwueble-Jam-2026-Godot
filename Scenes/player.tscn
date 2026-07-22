@@ -166,7 +166,7 @@ shader_parameter/vignette_color = Color(0.3, 0, 0, 1)
 default_font = ExtResource("8_8erm5")
 default_font_size = 27
 
-[node name="Player" type="CharacterBody3D" unique_id=1798834006]
+[node name="Player" type="CharacterBody3D" unique_id=1798834006 groups=["Player"]]
 script = ExtResource("1_v0iea")
 sprite_frames = ExtResource("2_cvnsp")
 

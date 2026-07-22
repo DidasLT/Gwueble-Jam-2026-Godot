@@ -12,7 +12,6 @@ var home_position : Vector3
 
 @onready var nav_agent = $NavigationAgent3D
 
-@export var patrol_points : Array[Node3D] = []
 var current_patrol_index : int = 0
 @export var patrol_speed : float = 2.0
 
@@ -21,6 +20,12 @@ var current_patrol_index : int = 0
 @export var flee_duration : float = 5.0        # how long it runs away after biting
 var can_bite : bool = true
 var flee_timer : float = 0.0
+
+@export var investigate_duration : float = 8.0
+var investigate_timer : float = 0.0
+
+@export var chase_lose_time : float = 2.5
+var lost_sight_timer : float = 0.0
 
 @export var vision_fov_degrees : float = 40.0
 @export var vision_range : float = 30.0
@@ -37,15 +42,14 @@ var player : CharacterBody3D = null
 var last_known_position : Vector3
 
 func _ready() -> void:
-	player = get_tree().get_first_node_in_group("Player")
+	player = get_tree().get_first_node_in_group("player")
 	home_position = global_position
-	call_deferred("_start_patrol")
 	await get_tree().physics_frame
 	await get_tree().physics_frame
-	print("After frame delay, picking wander target")
 	_pick_new_wander_target()
 
 func _physics_process(delta: float) -> void:
+	print("Physics process running, state: ", state)
 	if not is_on_floor():
 		velocity.y -= gravity_amount * delta
 	else:
@@ -53,10 +57,12 @@ func _physics_process(delta: float) -> void:
 
 	match state:
 		State.PATROL:
-			if _can_see_player() or _can_hear_player():
+			_patrol_movement(delta)
+			var sees = _can_see_player()
+			var hears = _can_hear_player()
+			if sees or hears:
 				state = State.CHASE
 				last_known_position = player.global_position
-				_patrol_movement(delta)
 		State.CHASE:
 			nav_agent.target_position = player.global_position
 			var next_path_position = nav_agent.get_next_path_position()
@@ -65,49 +71,78 @@ func _physics_process(delta: float) -> void:
 			var direction = (next_path_position - global_position)
 			direction.y = 0
 			direction = direction.normalized()
-
+			
 			velocity.x = direction.x * current_speed
 			velocity.z = direction.z * current_speed
 			move_and_slide()
-
-			# check for bite
+			
+			_face_direction(player.global_position, delta)
+			
 			var distance_to_player = global_position.distance_to(player.global_position)
 			if distance_to_player <= bite_range and can_bite:
-				_bite_player()
+				_bite_player()   # <- the CALL happens here, inside CHASE
+			
+			if _can_see_player() or _can_hear_player():
+				lost_sight_timer = 0.0
+			else:
+				lost_sight_timer += delta
+
+			if lost_sight_timer >= chase_lose_time:
+				last_known_position = player.global_position
+				state = State.INVESTIGATE
+				lost_sight_timer = 0.0
 			
 		State.FLEE:
 			_flee_movement(delta)
 		State.INVESTIGATE:
-			# move toward last_known_position, then give up back to PATROL after a timer
-			pass
+			if investigate_timer <= 0:
+				investigate_timer = investigate_duration
+
+			nav_agent.target_position = last_known_position
+			var next_pos = nav_agent.get_next_path_position()
+			var direction = (next_pos - global_position)
+			direction.y = 0
+
+			if direction.length() > 0.3:
+				direction = direction.normalized()
+				velocity.x = direction.x * patrol_speed
+				velocity.z = direction.z * patrol_speed
+				move_and_slide()
+				investigate_timer -= delta
+
+			if _can_see_player() or _can_hear_player():
+				state = State.CHASE
+				last_known_position = player.global_position
+			elif investigate_timer <= 0:
+				state = State.PATROL
+				investigate_timer = 0.0
 
 func _can_see_player() -> bool:
 	if not player:
-		print("No player reference!")
+		print("VISION: no player ref")
 		return false
 
 	var to_player = player.global_position - global_position
 	var distance = to_player.length()
-
-	print("Distance to player: ", distance, " / vision_range: ", vision_range)
+	print("VISION: distance=", distance, " range=", vision_range)
 
 	if distance > vision_range:
+		print("VISION: too far")
 		return false
 
 	var forward = -global_transform.basis.z
 	var angle_to_player = rad_to_deg(forward.angle_to(to_player.normalized()))
-
-	print("Angle to player: ", angle_to_player, " / max allowed: ", vision_fov_degrees / 2.0)
+	print("VISION: angle=", angle_to_player, " max=", vision_fov_degrees / 2.0)
 
 	if angle_to_player > vision_fov_degrees / 2.0:
+		print("VISION: outside FOV")
 		return false
 
 	var space_state = get_world_3d().direct_space_state
 	var query = PhysicsRayQueryParameters3D.create(global_position, player.global_position)
 	query.exclude = [self]
 	var result = space_state.intersect_ray(query)
-
-	print("Raycast result: ", result)
+	print("VISION: raycast result=", result)
 
 	return result.is_empty() or result.collider == player
 
@@ -126,6 +161,10 @@ func _can_hear_player() -> bool:
 		player.MoveState.SPRINT:
 			required_range = hearing_range_sprint
 
+	print("HEARING CHECK: dist=", distance, " required=", required_range, " move_state=", player.current_move_state)
+
+	return distance <= required_range
+
 	return distance <= required_range
 
 func _get_current_speed() -> float:
@@ -143,10 +182,6 @@ func _get_current_speed() -> float:
 
 	return player.walk_speed
 
-func _start_patrol() -> void:
-	await get_tree().physics_frame
-	_pick_new_wander_target()
-
 func _patrol_movement(delta: float) -> void:
 	nav_agent.target_position = wander_target
 	var next_pos = nav_agent.get_next_path_position()
@@ -163,6 +198,8 @@ func _patrol_movement(delta: float) -> void:
 	velocity.x = direction.x * patrol_speed
 	velocity.z = direction.z * patrol_speed
 	move_and_slide()
+	
+	_face_direction(next_pos, delta)
 
 func _bite_player() -> void:
 	
@@ -177,17 +214,30 @@ func _bite_player() -> void:
 func _flee_movement(delta: float) -> void:
 	flee_timer -= delta
 
-	var direction = (global_position - player.global_position)
-	direction.y = 0
-	direction = direction.normalized()
+	# recalculate flee target periodically, not every frame (cheaper, avoids jitter)
+	if flee_timer > 0 and (nav_agent.target_position == Vector3.ZERO or global_position.distance_to(nav_agent.target_position) < 1.0):
+		_pick_flee_target()
 
-	velocity.x = direction.x * _get_current_speed()
-	velocity.z = direction.z * _get_current_speed()
-	move_and_slide()
+	var next_pos = nav_agent.get_next_path_position()
+	var direction = (next_pos - global_position)
+	direction.y = 0
+
+	if direction.length() > 0.1:
+		direction = direction.normalized()
+		velocity.x = direction.x * _get_current_speed()
+		velocity.z = direction.z * _get_current_speed()
+		move_and_slide()
+		_face_direction(next_pos, delta)
 
 	if flee_timer <= 0:
 		state = State.PATROL
-		can_bite = true   # reset so it can bite again next encounter
+		can_bite = true
+
+func _pick_flee_target() -> void:
+	var away_direction = (global_position - player.global_position).normalized()
+	var flee_distance = 10.0
+	var target = global_position + away_direction * flee_distance
+	nav_agent.target_position = target
 
 func _pick_new_wander_target() -> void:
 	var angle = randf() * TAU
@@ -195,3 +245,12 @@ func _pick_new_wander_target() -> void:
 	var offset = Vector3(cos(angle) * dist, 0, sin(angle) * dist)
 	wander_target = home_position + offset
 	wander_timer = randf_range(wander_pause_min, wander_pause_max)
+
+func _face_direction(target_pos: Vector3, delta: float, rotation_speed: float = 8.0) -> void:
+	var direction = target_pos - global_position
+	direction.y = 0
+	if direction.length() < 0.01:
+		return
+
+	var target_rotation = atan2(direction.x, direction.z)
+	rotation.y = lerp_angle(rotation.y, target_rotation, delta * rotation_speed)
