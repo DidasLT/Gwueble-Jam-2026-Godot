@@ -145,6 +145,7 @@ func _physics_process(delta: float) -> void:
 				state = State.PATROL
 				investigate_timer = 0.0
 	_update_movement_animation()
+
 func _can_see_player() -> bool:
 	if not player:
 		return false

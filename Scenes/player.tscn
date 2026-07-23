@@ -10,9 +10,13 @@
 [ext_resource type="AudioStream" uid="uid://4hfvf6w4ngt7" path="res://Textures/chokeDeath.mp3" id="4_vgqql"]
 [ext_resource type="Theme" uid="uid://dir8matgs65dq" path="res://Textures/Text.tres" id="5_3smsa"]
 [ext_resource type="Texture2D" uid="uid://c4d3sbr1id7dl" path="res://Textures/grabbing_arm_frame.png" id="5_7dp3o"]
+[ext_resource type="Texture2D" uid="uid://fkd2clngers3" path="res://Textures/syringeempty.png" id="6_fd4e3"]
 [ext_resource type="Shader" uid="uid://c6nbgm31yrir7" path="res://Textures/Effects.gdshader" id="7_f1ek2"]
 [ext_resource type="Theme" uid="uid://bijq1jftnabn5" path="res://Textures/TextGame.tres" id="7_pu2lt"]
+[ext_resource type="Texture2D" uid="uid://d28hctorxfnn3" path="res://Textures/syringefull.png" id="7_qqcod"]
+[ext_resource type="Texture2D" uid="uid://blbd0hrhewrja" path="res://Textures/left_arm_checking_watch.png" id="8_7dp3o"]
 [ext_resource type="FontFile" uid="uid://du1sd7rr3ytc4" path="res://Textures/VCR_OSD_MONO_1.001.ttf" id="8_8erm5"]
+[ext_resource type="Script" uid="uid://qhlcweollk6u" path="res://Scenes/dna_puzzle_ui.gd" id="14_qqcod"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_g4v7s"]
 
@@ -50,6 +54,80 @@ animations = [{
 }],
 "loop": 1,
 "name": &"BottleHold",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_ukyrk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_7dp3o")
+}],
+"loop": 0,
+"name": &"PickUp",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_fd4e3")
+}],
+"loop": 1,
+"name": &"SyringeEmpty",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_qqcod")
+}],
+"loop": 1,
+"name": &"SyringeFull",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pu2lt")
+}],
+"loop": 1,
+"name": &"idleLighter",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3smsa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8erm5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f1ek2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tx1dd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gymyn")
+}],
+"loop": 1,
+"name": &"litLighter",
+"speed": 5.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_h4iuc"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_tx1dd")
+}],
+"loop": 1,
+"name": &"BottleHold",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_7dp3o")
+}],
+"loop": 1,
+"name": &"LookWatch",
 "speed": 5.0
 }, {
 "frames": [{
@@ -128,9 +206,29 @@ transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0.57352144, -0.20384514
 shaded = true
 texture_filter = 0
 sprite_frames = SubResource("SpriteFrames_fkybt")
-animation = &"PickUp"
-frame = 1
-frame_progress = 1.0
+animation = &"SyringeEmpty"
+
+[node name="LeftHand" type="AnimatedSprite3D" parent="Head/Camera3D" unique_id=1983657091]
+transform = Transform3D(0.24515904, 0, 0, 0, 0.3, 0, 0, 0, 0.3, -0.46627575, -0.20384514, -0.6843467)
+visible = false
+shaded = true
+texture_filter = 0
+sprite_frames = SubResource("SpriteFrames_h4iuc")
+animation = &"LookWatch"
+
+[node name="TimerUI" type="CanvasLayer" parent="Head/Camera3D/LeftHand" unique_id=1537132126]
+visible = false
+
+[node name="TimerLabel" type="Label" parent="Head/Camera3D/LeftHand/TimerUI" unique_id=1548168591]
+offset_left = 454.0
+offset_top = 651.0
+offset_right = 633.0
+offset_bottom = 715.0
+theme = SubResource("Theme_ukyrk")
+vertical_alignment = 2
+
+[node name="Label3D" type="Label3D" parent="Head/Camera3D/LeftHand" unique_id=30741341]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10734427, 0.08402562, 0)
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Head" unique_id=1879819679]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1877026, -0.32095587, -0.5131495)
@@ -167,16 +265,6 @@ grow_horizontal = 2
 grow_vertical = 0
 expand_mode = 1
 
-[node name="TimerUI" type="CanvasLayer" parent="." unique_id=1537132126]
-
-[node name="TimerLabel" type="Label" parent="TimerUI" unique_id=1548168591]
-offset_left = 83.0
-offset_top = 952.0
-offset_right = 262.0
-offset_bottom = 1016.0
-theme = SubResource("Theme_ukyrk")
-vertical_alignment = 2
-
 [node name="PromptUI" type="CanvasLayer" parent="." unique_id=2119018297]
 
 [node name="PromptLabel" type="Label" parent="PromptUI" unique_id=429266140]
@@ -209,7 +297,89 @@ text = "You died..."
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="DNAPuzzleUI" type="CanvasLayer" parent="." unique_id=816388447]
+script = ExtResource("14_qqcod")
+
+[node name="Panel" type="Control" parent="DNAPuzzleUI" unique_id=1168548073]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SampleLabel" type="Label" parent="DNAPuzzleUI/Panel" unique_id=1296952185]
+layout_mode = 0
+offset_left = 512.0
+offset_top = 535.0
+offset_right = 647.0
+offset_bottom = 586.0
+text = "Sample:"
+
+[node name="AnswerLabel" type="Label" parent="DNAPuzzleUI/Panel" unique_id=803103608]
+layout_mode = 0
+offset_left = 839.0
+offset_top = 538.0
+offset_right = 990.0
+offset_bottom = 565.0
+text = "Answer"
+
+[node name="ButtonA" type="Button" parent="DNAPuzzleUI/Panel" unique_id=1083918073]
+layout_mode = 0
+offset_left = 710.0
+offset_top = 761.0
+offset_right = 791.0
+offset_bottom = 838.0
+text = "A"
+
+[node name="ButtonT" type="Button" parent="DNAPuzzleUI/Panel" unique_id=971644476]
+layout_mode = 0
+offset_left = 854.0
+offset_top = 764.0
+offset_right = 928.0
+offset_bottom = 838.0
+text = "T"
+
+[node name="ButtonC" type="Button" parent="DNAPuzzleUI/Panel" unique_id=600604988]
+layout_mode = 0
+offset_left = 981.0
+offset_top = 768.0
+offset_right = 1060.0
+offset_bottom = 840.0
+text = "C"
+
+[node name="ButtonG" type="Button" parent="DNAPuzzleUI/Panel" unique_id=989655120]
+layout_mode = 0
+offset_left = 1118.0
+offset_top = 768.0
+offset_right = 1188.0
+offset_bottom = 839.0
+text = "G"
+
+[node name="SubmitButton" type="Button" parent="DNAPuzzleUI/Panel" unique_id=871418455]
+layout_mode = 0
+offset_left = 821.0
+offset_top = 889.0
+offset_right = 1065.0
+offset_bottom = 961.0
+text = "Submit"
+
+[node name="ClearButton" type="Button" parent="DNAPuzzleUI/Panel" unique_id=358618040]
+layout_mode = 0
+offset_left = 821.0
+offset_top = 889.0
+offset_right = 1065.0
+offset_bottom = 961.0
+text = "Submit"
+
+[node name="ResultLabel" type="Label" parent="DNAPuzzleUI/Panel" unique_id=983660345]
+layout_mode = 0
+offset_left = 896.0
+offset_top = 1000.0
+offset_right = 1009.0
+offset_bottom = 1035.0
+text = "ResultLabel"
+
 [node name="EffectsLayer" type="CanvasLayer" parent="." unique_id=1965722073]
+visible = false
 
 [node name="EffectsRect" type="ColorRect" parent="EffectsLayer" unique_id=2047383058]
 material = SubResource("ShaderMaterial_g4v7s")

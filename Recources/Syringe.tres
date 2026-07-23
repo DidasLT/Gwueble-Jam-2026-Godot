@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Item" format=3 uid="uid://thjaineytfir"]
+
+[ext_resource type="Texture2D" uid="uid://dv88rv3ud1cyf" path="res://Textures/BetterSyringeEmpty.png" id="1_7j1y7"]
+[ext_resource type="Script" uid="uid://bcmncbrkwmqnn" path="res://Scripts/item_data.gd" id="1_g5ko2"]
+
+[resource]
+script = ExtResource("1_g5ko2")
+item_name = "Syringe"
+idle_animation = "SyringeEmpty"
+pickup_animation = "PickUp"
+on_animation = "SyringeFull"
+icon = ExtResource("1_7j1y7")
+is_syringe = true
+metadata/_custom_type_script = "uid://bcmncbrkwmqnn"

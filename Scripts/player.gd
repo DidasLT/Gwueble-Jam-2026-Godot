@@ -15,6 +15,7 @@ var death_angular_velocity : float = 0.0
 @export var fall_gravity : float = 4.0 
 @export var max_fall_angle : float = 90.0
 
+
 #bobbing
 @export var bob_amplitude : float = 0.08
 @export var bob_speed : float
@@ -37,12 +38,20 @@ var death_angular_velocity : float = 0.0
 @export var walk_hand_bob_speed : float = 4.0
 
 @export var inventory_size : int = 2
+@export var syringe_use_range : float = 2.0
+
+var has_filled_syringe : bool = false
+var dna_sample : String = ""
+
+const DNA_BASES = ["A", "T", "C", "G"]
 
 var inventory : Array = [null, null]
 var current_slot : int = 0 
 
 var hand_bob_time : float = 0.0
 var hand_default_pos : Vector3
+var left_hand_default_pos : Vector3
+var hidden_position: Vector3
 
 var bob_time : float = 0.0
 var camera_start_y : float
@@ -70,14 +79,17 @@ var current_move_state : MoveState = MoveState.WALK
 @onready var death_overlay = $DeathScreen/ColorRect
 @onready var death_screen = $DeathScreen
 @onready var death_sound = $DeathSound
-@onready var item_pickup: AudioStreamPlayer = $ItemPickup
+@onready var item_pickup = $ItemPickup
 @onready var prompt_label = $PromptUI/PromptLabel
 @onready var use_sfx = $UseSFX
 @onready var effects_material = $EffectsLayer/EffectsRect.material
 @onready var effectLayer = $EffectsLayer
 @onready var slot_icons = [$InventoryUI/Slot1Icon, $InventoryUI/Slot2Icon]
 @onready var flicker_timer = $LighterFlickerTimer
-@onready var timer_label = $TimerUI/TimerLabel
+@onready var timer_label = $Head/Camera3D/LeftHand/Label3D
+@onready var left_hand: = $Head/Camera3D/LeftHand
+@onready var dna_puzzle_ui = $DNAPuzzleUI
+
 
 var death_screen_shown : bool = false
 
@@ -113,10 +125,14 @@ func _ready() -> void:
 	InfectionManager.infection_stage_changed.connect(_on_stage_changed)
 	InfectionManager.player_died.connect(_on_died)
 	hand_default_pos = hand_sprite.position
+	left_hand_default_pos = left_hand.position
 	hand_sprite.visible = false
 	flicker_timer.timeout.connect(_on_flicker_check)
 	hand_sprite.animation_finished.connect(_on_hand_animation_finished)
 	print("Signal connected: ", hand_sprite.animation_finished.get_connections())
+	left_hand_default_pos = left_hand.position
+	hidden_position = left_hand_default_pos + Vector3(0, -5, 0)
+	left_hand.position = hidden_position
 
 func _process(_delta: float) -> void:
 	effects_material.set_shader_parameter("infection_level", InfectionManager.infection_level)
@@ -141,6 +157,17 @@ func _physics_process(delta: float) -> void:
 		
 	if Input.is_action_just_pressed("item_use") and equipped_item and equipped_item.is_consumable:
 		_use_consumable()
+	
+	if Input.is_action_pressed("tab"):
+		left_hand.visible = true
+	else:
+		left_hand.visible = false
+	
+	if Input.is_action_just_pressed("item_use") and equipped_item and equipped_item.is_syringe and not has_filled_syringe:
+		_try_collect_sample()
+	
+	if Input.is_action_just_pressed("interact") and current_interactable:
+		current_interactable.interact(self)
 	
 	if Input.is_action_pressed("sneak") and is_on_floor():
 		speed = sneak_speed
@@ -282,10 +309,12 @@ func _update_hand_bob(delta: float) -> void:
 		bob_offset.y = sin(hand_bob_time * 2.0) * hand_bob_amplitude
 		bob_offset.x = cos(hand_bob_time) * hand_sway_amount
 		hand_sprite.position = hand_default_pos.lerp(hand_default_pos + bob_offset, 1.0)
+		left_hand.position = left_hand_default_pos.lerp(left_hand_default_pos + bob_offset, 1.0)
 	else:
 		hand_bob_time += delta * 1.5
 		var idle_offset = Vector3(0, sin(hand_bob_time) * 0.005, 0)
 		hand_sprite.position = hand_sprite.position.lerp(hand_default_pos + idle_offset, delta * 5.0)
+		left_hand.position = left_hand.position.lerp(left_hand_default_pos + idle_offset, delta * 5.0)
 
 func _equip_current_slot(just_picked_up: bool = false) -> void:
 	var item = inventory[current_slot]
@@ -314,14 +343,8 @@ func _update_timer_ui() -> void:
 	var minutes = int(time_remaining) / 60
 	var seconds = int(time_remaining) % 60
 	timer_label.text = "%02d:%02d" % [minutes, seconds]
-	_on_bitten()
 	
 	timer_label.modulate = Color.WHITE.lerp(Color.RED, InfectionManager.infection_level)
-
-func _on_bitten() -> void:
-	var tween = create_tween()
-	tween.tween_property(timer_label, "scale", Vector2(1.3, 1.3), 0.1)
-	tween.tween_property(timer_label, "scale", Vector2(1.0, 1.0), 0.2)
 
 func _on_died() -> void:
 	is_dying = true
@@ -356,12 +379,39 @@ func _check_for_interactable() -> void:
 	var query = PhysicsRayQueryParameters3D.create(from, to)
 	query.exclude = [self]
 	var result = space_state.intersect_ray(query)
-
+	
 	if result and result.collider.is_in_group("interactable"):
 		current_interactable = result.collider
-		var item_data = current_interactable.item_data
-		prompt_label.text = item_data.item_name + "\nPress E to pick up"
+	
+		if "item_data" in current_interactable and current_interactable.item_data:
+			prompt_label.text = current_interactable.item_data.item_name + "\nPress E to pick up"
+		elif "prompt_text" in current_interactable:
+			prompt_label.text = current_interactable.prompt_text
+		else:
+			prompt_label.text = "Press E to interact"
+
 		prompt_label.visible = true
 	else:
 		current_interactable = null
 		prompt_label.visible = false
+func _try_collect_sample() -> void:
+	var monster = get_tree().get_first_node_in_group("monster")
+	if not monster:
+		return
+
+	var distance = global_position.distance_to(monster.global_position)
+	if distance <= syringe_use_range:
+		dna_sample = _generate_dna_sample()
+		has_filled_syringe = true
+		print("Collected sample: ", dna_sample)
+		if has_filled_syringe:
+			hand_sprite.play(equipped_item.on_animation)
+
+func _on_mixer_opened(sample: String) -> void:
+	dna_puzzle_ui.open_puzzle(sample)
+
+func _generate_dna_sample(length: int = 8) -> String:
+	var sample = ""
+	for i in range(length):
+		sample += DNA_BASES[randi() % DNA_BASES.size()]
+	return sample

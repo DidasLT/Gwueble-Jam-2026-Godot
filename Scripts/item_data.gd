@@ -11,6 +11,7 @@ class_name Item
 @export var light_range : float = 3.0
 @export var use_sound : AudioStream
 @export var icon : Texture2D
+@export var is_syringe : bool = false
 
 @export var is_consumable : bool = false     # true = used up on pickup, not held
 @export var infection_relief : float = 0.15  # how much it reduces infection_level (0-1 range)

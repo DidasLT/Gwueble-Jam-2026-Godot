@@ -3,12 +3,15 @@
 [ext_resource type="Material" uid="uid://bk7wr877hbxn3" path="res://Textures/prototype.tres" id="1_jjgbg"]
 [ext_resource type="PackedScene" uid="uid://bgumj16d7s0rb" path="res://Scenes/player.tscn" id="2_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://dgxdcpqh742oq" path="res://Scenes/item.tscn" id="3_8gbba"]
-[ext_resource type="Resource" uid="uid://11y6puk3kke5" path="res://Textures/Lighter.tres" id="4_jjvhh"]
+[ext_resource type="Resource" uid="uid://11y6puk3kke5" path="res://Recources/Lighter.tres" id="4_jjvhh"]
 [ext_resource type="Texture2D" uid="uid://ci01gbcgffhf0" path="res://Textures/lighter_inventory_and_pickup.png" id="5_kry3j"]
 [ext_resource type="PackedScene" uid="uid://45m72uyt1idn" path="res://Scenes/InfectionManager.tscn" id="6_21xkr"]
-[ext_resource type="Resource" uid="uid://bw55dcc85808m" path="res://Scenes/PillBottle.tres" id="7_344ge"]
+[ext_resource type="Resource" uid="uid://bw55dcc85808m" path="res://Recources/PillBottle.tres" id="7_344ge"]
 [ext_resource type="Texture2D" uid="uid://dlwu7vowcho1g" path="res://Textures/pillbottle.png" id="8_ynf5e"]
 [ext_resource type="PackedScene" uid="uid://b27y655sngjdh" path="res://Scenes/monster.tscn" id="9_ynf5e"]
+[ext_resource type="Resource" uid="uid://thjaineytfir" path="res://Recources/Syringe.tres" id="10_d1ilt"]
+[ext_resource type="Texture2D" uid="uid://dv88rv3ud1cyf" path="res://Textures/BetterSyringeEmpty.png" id="11_6iyac"]
+[ext_resource type="PackedScene" uid="uid://c1m4d6qm6bv64" path="res://Scenes/chemical_mixer.tscn" id="12_6iyac"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jjvhh"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -25,6 +28,8 @@ glow_enabled = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bo1nx"]
 albedo_color = Color(0.16898826, 0.062337354, 0, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_d1ilt"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_g4v7s"]
 vertices = PackedVector3Array(12.405703, -0.84978104, -7.172756, 12.405703, -0.84978104, -5.672756, 13.155703, -0.84978104, -5.672756, 13.155703, -0.84978104, -7.172756, 13.655703, -0.84978104, -7.672756, 15.155703, -0.84978104, -7.672756, 19.155703, -0.84978104, -33.672756, 11.905703, -0.84978104, -7.672756, -12.094297, -0.84978104, -7.672756, -19.594297, -0.84978104, -33.672756, 15.655703, -0.84978104, -7.172756, 15.655703, -0.84978104, -5.172756, 19.155703, -0.84978104, -5.172756, -19.594297, -0.84978104, -5.172756, -12.594297, -0.84978104, -5.172756, -12.594297, -0.84978104, -7.172756, -8.094297, 3.900219, -9.172756, -8.094297, 3.900219, -7.672756, 13.905703, 3.900219, -7.672756, 13.905703, 3.900219, -9.172756, 11.905703, -0.84978104, -4.422756, 13.155703, -0.84978104, 3.3272438, 0.15570259, -0.84978104, -4.422756, 0.15570259, -0.84978104, 2.0772438, 1.1557026, -0.84978104, 2.5772438, 1.1557026, -0.84978104, 3.3272438, -19.594297, -0.84978104, 13.577244, -12.594297, -0.84978104, 13.577244, 15.655703, -0.84978104, 13.577244, 19.155703, -0.84978104, 13.577244, -9.094297, 3.900219, 14.327244, -9.094297, 3.900219, 13.327244, -9.594297, 3.900219, 12.827244, -10.344297, 3.900219, 14.327244, -9.594297, -0.84978104, -1.9227562, -10.344297, -0.84978104, -4.422756, -10.344297, -0.59978104, -0.095832825, -10.344297, 3.650219, 11.442631, -7.3442974, -0.84978104, 3.3272438, -1.0942974, -0.84978104, 3.3272438, -1.0942974, -0.84978104, 2.5772438, -7.3442974, -0.84978104, -1.9227562, -7.8442974, -0.84978104, -2.4227562, -9.094297, -0.84978104, -2.4227562, -7.8442974, 3.900219, 13.327244, 13.155703, 3.900219, 14.327244, 13.155703, 3.900219, -4.422756, -7.3442974, 3.900219, -4.422756, -7.3442974, 3.900219, 12.827244, -1.0942974, -0.84978104, 3.8272438, -0.09429741, -0.84978104, 4.327244, -7.3442974, -0.84978104, 14.327244, -0.09429741, -0.84978104, 14.327244, 13.155703, -0.84978104, 14.327244, -10.344297, -0.84978104, 10.827244, -10.344297, -0.84978104, 14.327244, -9.594297, -0.84978104, 14.327244, -9.594297, -0.84978104, 10.827244, -19.594297, -0.84978104, 29.827244, -12.594297, -0.84978104, 29.827244, -12.344297, -0.84978104, 25.077244, 15.655703, -0.84978104, 15.577244, 15.155703, -0.84978104, 16.077244, 19.155703, -0.84978104, 29.827244, -7.8442974, -0.84978104, 16.077244, -7.8442974, -0.84978104, 25.077244, -7.5942974, -0.84978104, 29.827244, -8.094297, 3.900219, 16.077244, -8.094297, 3.900219, 17.827244, 13.905703, 3.900219, 17.827244, 13.905703, 3.900219, 16.077244, -8.094297, -0.84978104, 25.577244, -12.094297, -0.84978104, 25.577244, -9.344297, -0.59978104, 25.327244, -10.844297, -0.59978104, 25.327244, -9.594297, 2.650219, 16.327244, -10.844297, 2.650219, 16.327244, -10.844297, -2.599781, 31.327244, -10.844297, -3.349781, 33.327244, -9.344297, -3.349781, 33.327244, -9.344297, -2.599781, 31.327244)
@@ -123,10 +128,16 @@ shaded = true
 texture_filter = 0
 texture = ExtResource("5_kry3j")
 
-[node name="Monster" parent="." unique_id=980809512 instance=ExtResource("9_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.230291, 0.8013191, -20.75578)
+[node name="Monster" parent="." unique_id=980809512 groups=["monster"] instance=ExtResource("9_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.230291, 1.3779831, -20.75578)
 wander_radius = 20.0
+wander_pause_min = 4.0
 wander_pause_max = 2.0
+show_debug_vision = false
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Monster" unique_id=2011278915]
+cast_shadow = 0
+mesh = SubResource("CapsuleMesh_d1ilt")
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=853908010]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0671072, 1.2674779, 1.591615)
@@ -257,3 +268,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.987129, 5.498272, 14.59690
 
 [node name="Marker3D6" type="Marker3D" parent="Markers" unique_id=712509024]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.3712983, 5.079796, 11.6127405)
+
+[node name="Syringe" parent="." unique_id=1798243310 instance=ExtResource("3_8gbba")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.22541785, 0.7108568, 4.3682528)
+item_data = ExtResource("10_d1ilt")
+
+[node name="Sprite3D" type="Sprite3D" parent="Syringe" unique_id=1600834696]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3087865, -0.050628662)
+billboard = 1
+shaded = true
+texture = ExtResource("11_6iyac")
+
+[node name="ChemicalMixer" parent="." unique_id=1240421456 instance=ExtResource("12_6iyac")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.931469, 5.3105927, 10.783907)
