@@ -16,6 +16,7 @@ func _ready() -> void:
 	$Panel/ButtonC.pressed.connect(_on_base_pressed.bind("C"))
 	$Panel/ButtonG.pressed.connect(_on_base_pressed.bind("G"))
 	$Panel/SubmitButton.pressed.connect(_on_submit)
+	$Panel/CloseButton.pressed.connect(close_puzzle)
 
 func open_puzzle(sample: String) -> void:
 	target_sample = sample
@@ -24,14 +25,19 @@ func open_puzzle(sample: String) -> void:
 	answer_label.text = "Your answer: "
 	result_label.text = ""
 	visible = true
-	get_tree().paused = true   # optional: pause gameplay while solving
-	process_mode = Node.PROCESS_MODE_ALWAYS   # so UI still works while paused
+	get_tree().paused = true
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE  # so UI still works while paused
 
 func _on_base_pressed(base: String) -> void:
 	if player_answer.length() >= target_sample.length():
 		return
 	player_answer += base
 	answer_label.text = "Your answer: " + player_answer
+
+func _unhandled_input(event: InputEvent) -> void:
+	if visible and event.is_action_pressed("esc"):
+		close_puzzle()
 
 func _on_submit() -> void:
 	var correct_answer = ""
@@ -55,6 +61,11 @@ func _grant_antidote() -> void:
 	await get_tree().create_timer(1.5).timeout
 	visible = false
 	get_tree().paused = false
+
+func close_puzzle() -> void:
+	visible = false
+	get_tree().paused = false
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _on_clear_pressed() -> void:
 	player_answer = ""

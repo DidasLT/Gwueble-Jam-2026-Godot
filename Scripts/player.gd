@@ -88,7 +88,6 @@ var current_move_state : MoveState = MoveState.WALK
 @onready var flicker_timer = $LighterFlickerTimer
 @onready var timer_label = $Head/Camera3D/LeftHand/Label3D
 @onready var left_hand: = $Head/Camera3D/LeftHand
-@onready var dna_puzzle_ui = $DNAPuzzleUI
 
 
 var death_screen_shown : bool = false
@@ -106,7 +105,7 @@ func pickup_item(item: Item) -> void:
 	else:
 		inventory[current_slot] = item
 	
-	_equip_current_slot(true)   # true = play pickup animation
+	_equip_current_slot(true)
 	_update_inventory_ui()
 	
 	equipped_item = item
@@ -235,9 +234,6 @@ func _physics_process(delta: float) -> void:
 		_equip_current_slot()
 		_update_inventory_ui()
 		item_light.visible = false
-	
-	if Input.is_action_just_pressed("interact") and current_interactable:
-		current_interactable.interact(self)
 	
 	# head bob
 	if is_on_floor() and horizontal_velocity.length() > 0.2:
@@ -394,6 +390,7 @@ func _check_for_interactable() -> void:
 	else:
 		current_interactable = null
 		prompt_label.visible = false
+
 func _try_collect_sample() -> void:
 	var monster = get_tree().get_first_node_in_group("monster")
 	if not monster:
@@ -406,9 +403,6 @@ func _try_collect_sample() -> void:
 		print("Collected sample: ", dna_sample)
 		if has_filled_syringe:
 			hand_sprite.play(equipped_item.on_animation)
-
-func _on_mixer_opened(sample: String) -> void:
-	dna_puzzle_ui.open_puzzle(sample)
 
 func _generate_dna_sample(length: int = 8) -> String:
 	var sample = ""

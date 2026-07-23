@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b28hjtx0vb6du" path="res://Scripts/monster.gd" id="1_xhoai"]
 [ext_resource type="PackedScene" uid="uid://dssntau6j8057" path="res://Textures/Monster.blend" id="2_i44lo"]
-[ext_resource type="AudioStream" uid="uid://baaqm75u3e4oi" path="res://Textures/MonsterBite.mp3" id="3_hyvb2"]
+[ext_resource type="AudioStream" uid="uid://baaqm75u3e4oi" path="res://Sound/MonsterBite.mp3" id="3_hyvb2"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_i44lo"]
 height = 3.749629
@@ -984,7 +984,7 @@ _data = {
 &"idle": SubResource("Animation_6ks7b")
 }
 
-[node name="Monster" type="CharacterBody3D" unique_id=980809512]
+[node name="Monster" type="CharacterBody3D" unique_id=980809512 groups=["monster"]]
 script = ExtResource("1_xhoai")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=419702996]

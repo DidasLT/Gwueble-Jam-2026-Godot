@@ -12,6 +12,8 @@
 [ext_resource type="Resource" uid="uid://thjaineytfir" path="res://Recources/Syringe.tres" id="10_d1ilt"]
 [ext_resource type="Texture2D" uid="uid://dv88rv3ud1cyf" path="res://Textures/BetterSyringeEmpty.png" id="11_6iyac"]
 [ext_resource type="PackedScene" uid="uid://c1m4d6qm6bv64" path="res://Scenes/chemical_mixer.tscn" id="12_6iyac"]
+[ext_resource type="Texture2D" uid="uid://djftj75q6ewe1" path="res://Textures/hall_wall_texture.png" id="13_fdnlq"]
+[ext_resource type="PackedScene" uid="uid://cox6ynpu04qcs" path="res://dna_puzzle_ui.tscn" id="14_jkdf5"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jjvhh"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -38,7 +40,7 @@ agent_height = 3.75
 agent_radius = 0.7
 
 [sub_resource type="BoxMesh" id="BoxMesh_57qmd"]
-size = Vector3(40.324, 1, 64.888)
+size = Vector3(40.324, 1, 64.60567)
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_hptm8"]
 data = PackedVector3Array(-20.161999, 0.5, 32.444, 20.161999, 0.5, 32.444, -20.161999, -0.5, 32.444, 20.161999, 0.5, 32.444, 20.161999, -0.5, 32.444, -20.161999, -0.5, 32.444, 20.161999, 0.5, -32.444, -20.161999, 0.5, -32.444, 20.161999, -0.5, -32.444, -20.161999, 0.5, -32.444, -20.161999, -0.5, -32.444, 20.161999, -0.5, -32.444, 20.161999, 0.5, 32.444, 20.161999, 0.5, -32.444, 20.161999, -0.5, 32.444, 20.161999, 0.5, -32.444, 20.161999, -0.5, -32.444, 20.161999, -0.5, 32.444, -20.161999, 0.5, -32.444, -20.161999, 0.5, 32.444, -20.161999, -0.5, -32.444, -20.161999, 0.5, 32.444, -20.161999, -0.5, 32.444, -20.161999, -0.5, -32.444, 20.161999, 0.5, 32.444, -20.161999, 0.5, 32.444, 20.161999, 0.5, -32.444, -20.161999, 0.5, 32.444, -20.161999, 0.5, -32.444, 20.161999, 0.5, -32.444, -20.161999, -0.5, 32.444, 20.161999, -0.5, 32.444, -20.161999, -0.5, -32.444, 20.161999, -0.5, 32.444, 20.161999, -0.5, -32.444, -20.161999, -0.5, -32.444)
@@ -63,6 +65,22 @@ size = Vector3(23.326721, 1.3862915, 22.033104)
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_6iyac"]
 data = PackedVector3Array(-11.6634, 0.6931, 10.571899, 11.6634, 0.6931, 10.571899, -11.6634, -0.6931, 10.571899, 11.6634, 0.6931, 10.571899, 11.6634, -0.6931, 10.571899, -11.6634, -0.6931, 10.571899, 11.6634, 0.6931, -10.571899, -11.6634, 0.6931, -10.571899, 11.6634, -0.6931, -10.571899, -11.6634, 0.6931, -10.571899, -11.6634, -0.6931, -10.571899, 11.6634, -0.6931, -10.571899, 11.6634, 0.6931, 10.571899, 11.6634, 0.6931, -10.571899, 11.6634, -0.6931, 10.571899, 11.6634, 0.6931, -10.571899, 11.6634, -0.6931, -10.571899, 11.6634, -0.6931, 10.571899, -11.6634, 0.6931, -10.571899, -11.6634, 0.6931, 10.571899, -11.6634, -0.6931, -10.571899, -11.6634, 0.6931, 10.571899, -11.6634, -0.6931, 10.571899, -11.6634, -0.6931, -10.571899, 11.6634, 0.6931, 10.571899, -11.6634, 0.6931, 10.571899, 11.6634, 0.6931, -10.571899, -11.6634, 0.6931, 10.571899, -11.6634, 0.6931, -10.571899, 11.6634, 0.6931, -10.571899, -11.6634, -0.6931, 10.571899, 11.6634, -0.6931, 10.571899, -11.6634, -0.6931, -10.571899, 11.6634, -0.6931, 10.571899, 11.6634, -0.6931, -10.571899, -11.6634, -0.6931, -10.571899)
 
+[sub_resource type="BoxMesh" id="BoxMesh_yf5fn"]
+size = Vector3(29.757446, 0.5571289, 12.969429)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_fdnlq"]
+data = PackedVector3Array(-14.878699, 0.2786, 6.4846997, 14.878699, 0.2786, 6.4846997, -14.878699, -0.2786, 6.4846997, 14.878699, 0.2786, 6.4846997, 14.878699, -0.2786, 6.4846997, -14.878699, -0.2786, 6.4846997, 14.878699, 0.2786, -6.4846997, -14.878699, 0.2786, -6.4846997, 14.878699, -0.2786, -6.4846997, -14.878699, 0.2786, -6.4846997, -14.878699, -0.2786, -6.4846997, 14.878699, -0.2786, -6.4846997, 14.878699, 0.2786, 6.4846997, 14.878699, 0.2786, -6.4846997, 14.878699, -0.2786, 6.4846997, 14.878699, 0.2786, -6.4846997, 14.878699, -0.2786, -6.4846997, 14.878699, -0.2786, 6.4846997, -14.878699, 0.2786, -6.4846997, -14.878699, 0.2786, 6.4846997, -14.878699, -0.2786, -6.4846997, -14.878699, 0.2786, 6.4846997, -14.878699, -0.2786, 6.4846997, -14.878699, -0.2786, -6.4846997, 14.878699, 0.2786, 6.4846997, -14.878699, 0.2786, 6.4846997, 14.878699, 0.2786, -6.4846997, -14.878699, 0.2786, 6.4846997, -14.878699, 0.2786, -6.4846997, 14.878699, 0.2786, -6.4846997, -14.878699, -0.2786, 6.4846997, 14.878699, -0.2786, 6.4846997, -14.878699, -0.2786, -6.4846997, 14.878699, -0.2786, 6.4846997, 14.878699, -0.2786, -6.4846997, -14.878699, -0.2786, -6.4846997)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jkdf5"]
+albedo_texture = ExtResource("13_fdnlq")
+
+[sub_resource type="BoxMesh" id="BoxMesh_jkdf5"]
+size = Vector3(29.757446, 0.5571289, 12.969429)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wsu2k"]
+albedo_texture = ExtResource("13_fdnlq")
+texture_filter = 0
+
 [node name="Main" type="Node3D" unique_id=2129668421]
 
 [node name="Node" parent="." unique_id=1705530513 instance=ExtResource("6_21xkr")]
@@ -76,7 +94,7 @@ light_color = Color(0.4566366, 0.416137, 0.37861753, 1)
 shadow_enabled = true
 
 [node name="Player" parent="." unique_id=1798834006 groups=["player"] instance=ExtResource("2_bo1nx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.008285046, 1.1801081, 0.73973393)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18576622, 7.4571514, 0.75038433)
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="." unique_id=1290107885]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.7349019)
@@ -128,7 +146,7 @@ shaded = true
 texture_filter = 0
 texture = ExtResource("5_kry3j")
 
-[node name="Monster" parent="." unique_id=980809512 groups=["monster"] instance=ExtResource("9_ynf5e")]
+[node name="Monster" parent="." unique_id=980809512 instance=ExtResource("9_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.230291, 1.3779831, -20.75578)
 wander_radius = 20.0
 wander_pause_min = 4.0
@@ -147,7 +165,7 @@ navigation_mesh = SubResource("NavigationMesh_g4v7s")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.2743424, -1.5997736)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/StaticBody3D" unique_id=743804928]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18229675, -0.3876953, -0.37898254)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18229675, -0.3876953, -0.52014923)
 mesh = SubResource("BoxMesh_57qmd")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/StaticBody3D" unique_id=1674796586]
@@ -281,3 +299,87 @@ texture = ExtResource("11_6iyac")
 
 [node name="ChemicalMixer" parent="." unique_id=1240421456 instance=ExtResource("12_6iyac")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.931469, 5.3105927, 10.783907)
+
+[node name="HotelRoom" type="Node3D" parent="." unique_id=258187960]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.522446, 62.79284)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="HotelRoom" unique_id=1732857421]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5060635, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HotelRoom/StaticBody3D" unique_id=761676174]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.115898, 0.22143555, 4.3379593)
+mesh = SubResource("BoxMesh_yf5fn")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HotelRoom/StaticBody3D" unique_id=1079764275]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.115898, 0.22143555, 4.3379593)
+shape = SubResource("ConcavePolygonShape3D_fdnlq")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="HotelRoom" unique_id=605351410]
+transform = Transform3D(0.018847393, 0, 0, 0, 9.045877, 0, 0, 0, 1, 5.187943, 0.51929855, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HotelRoom/StaticBody3D2" unique_id=552207306]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.115875, 0.22143555, 4.3379593)
+material_override = SubResource("StandardMaterial3D_jkdf5")
+mesh = SubResource("BoxMesh_yf5fn")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HotelRoom/StaticBody3D2" unique_id=1924016455]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.115898, 0.22143555, 4.3379593)
+shape = SubResource("ConcavePolygonShape3D_fdnlq")
+
+[node name="StaticBody3D3" type="StaticBody3D" parent="HotelRoom" unique_id=90913814]
+transform = Transform3D(0.018847393, 0, 0, 0, 9.045877, 0, 0, 0, 1, -23.981958, 0.51929855, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HotelRoom/StaticBody3D3" unique_id=523760732]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.115875, 0.22143555, 4.3379593)
+mesh = SubResource("BoxMesh_yf5fn")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HotelRoom/StaticBody3D3" unique_id=1749056068]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.115898, 0.22143555, 4.3379593)
+shape = SubResource("ConcavePolygonShape3D_fdnlq")
+
+[node name="StaticBody3D4" type="StaticBody3D" parent="HotelRoom" unique_id=1157579628]
+transform = Transform3D(0.994126, 0, 0, 0, 9.045877, 0, 0, 0, 0.04796976, 1.5658007, 0.51929855, -2.0252151)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HotelRoom/StaticBody3D4" unique_id=78163677]
+transform = Transform3D(1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000224, -11.115875, 0.22143555, 4.3380127)
+mesh = SubResource("BoxMesh_jkdf5")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HotelRoom/StaticBody3D4" unique_id=1756748513]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.115898, 0.22143555, 4.3379593)
+shape = SubResource("ConcavePolygonShape3D_fdnlq")
+
+[node name="StaticBody3D5" type="StaticBody3D" parent="HotelRoom" unique_id=1436067787]
+transform = Transform3D(0.90479594, 0, 0, 0, 9.045877, 0, 0, 0, 0.04796976, 1.5658007, 0.51929855, 10.202667)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HotelRoom/StaticBody3D5" unique_id=1680588652]
+transform = Transform3D(1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000224, -11.115875, 0.22143555, 4.3380127)
+material_override = SubResource("StandardMaterial3D_wsu2k")
+mesh = SubResource("BoxMesh_jkdf5")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HotelRoom/StaticBody3D5" unique_id=2072370965]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.115898, 0.22143555, 4.3379593)
+shape = SubResource("ConcavePolygonShape3D_fdnlq")
+
+[node name="StaticBody3D6" type="StaticBody3D" parent="HotelRoom" unique_id=1825545254]
+transform = Transform3D(0.9896202, 0, 0, 0, 1.3199306, 0, 0, 0, 0.9503507, 1.3062811, 4.252056, 0.25108337)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HotelRoom/StaticBody3D6" unique_id=1970836133]
+transform = Transform3D(1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000224, -11.115875, 0.22143555, 4.3380127)
+mesh = SubResource("BoxMesh_jkdf5")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HotelRoom/StaticBody3D6" unique_id=684839563]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.115898, 0.22143555, 4.3379593)
+shape = SubResource("ConcavePolygonShape3D_fdnlq")
+
+[node name="StaticBody3D7" type="StaticBody3D" parent="HotelRoom" unique_id=1852876013]
+transform = Transform3D(0.076418675, 0, 0, 0, 1.3199306, 0, 0, 0, 0.06786862, -22.082726, 3.4868011, 10.158394)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HotelRoom/StaticBody3D7" unique_id=426325777]
+transform = Transform3D(1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000224, -11.115875, 0.22143555, 4.3380127)
+mesh = SubResource("BoxMesh_jkdf5")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HotelRoom/StaticBody3D7" unique_id=514516663]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.115898, 0.22143555, 4.3379593)
+shape = SubResource("ConcavePolygonShape3D_fdnlq")
+
+[node name="DNAPuzzleUI" parent="." unique_id=1780173968 instance=ExtResource("14_jkdf5")]

@@ -1,0 +1,92 @@
+[gd_scene format=3 uid="uid://cox6ynpu04qcs"]
+
+[ext_resource type="Script" uid="uid://qhlcweollk6u" path="res://Scenes/dna_puzzle_ui.gd" id="1_1k57x"]
+
+[node name="DNAPuzzleUI" type="CanvasLayer" unique_id=1780173968 groups=["dna_puzzle_ui"]]
+script = ExtResource("1_1k57x")
+
+[node name="Panel" type="Control" parent="." unique_id=671883243]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SampleLabel" type="Label" parent="Panel" unique_id=1171334146]
+layout_mode = 0
+offset_left = 188.0
+offset_top = 142.0
+offset_right = 323.0
+offset_bottom = 193.0
+text = "Sample:"
+
+[node name="AnswerLabel" type="Label" parent="Panel" unique_id=1788559770]
+layout_mode = 0
+offset_left = 525.0
+offset_top = 134.0
+offset_right = 676.0
+offset_bottom = 161.0
+text = "Answer"
+
+[node name="ButtonA" type="Button" parent="Panel" unique_id=1903658627]
+layout_mode = 0
+offset_left = 710.0
+offset_top = 761.0
+offset_right = 791.0
+offset_bottom = 838.0
+text = "A"
+
+[node name="ButtonT" type="Button" parent="Panel" unique_id=1186623215]
+layout_mode = 0
+offset_left = 854.0
+offset_top = 764.0
+offset_right = 928.0
+offset_bottom = 838.0
+text = "T"
+
+[node name="ButtonC" type="Button" parent="Panel" unique_id=836231984]
+layout_mode = 0
+offset_left = 981.0
+offset_top = 768.0
+offset_right = 1060.0
+offset_bottom = 840.0
+text = "C"
+
+[node name="ButtonG" type="Button" parent="Panel" unique_id=1164897974]
+layout_mode = 0
+offset_left = 1118.0
+offset_top = 768.0
+offset_right = 1188.0
+offset_bottom = 839.0
+text = "G"
+
+[node name="SubmitButton" type="Button" parent="Panel" unique_id=633760996]
+layout_mode = 0
+offset_left = 821.0
+offset_top = 889.0
+offset_right = 1065.0
+offset_bottom = 961.0
+text = "Submit"
+
+[node name="ClearButton" type="Button" parent="Panel" unique_id=1759102087]
+layout_mode = 0
+offset_left = 568.0
+offset_top = 889.0
+offset_right = 711.0
+offset_bottom = 935.0
+text = "Clear"
+
+[node name="CloseButton" type="Button" parent="Panel" unique_id=906583641]
+layout_mode = 0
+offset_left = 1702.0
+offset_top = 54.0
+offset_right = 1779.0
+offset_bottom = 114.0
+text = "X"
+
+[node name="ResultLabel" type="Label" parent="Panel" unique_id=2130010557]
+layout_mode = 0
+offset_left = 896.0
+offset_top = 1000.0
+offset_right = 1009.0
+offset_bottom = 1035.0
+text = "ResultLabel"
