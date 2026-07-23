@@ -70,7 +70,7 @@ light_color = Color(0.4566366, 0.416137, 0.37861753, 1)
 shadow_enabled = true
 
 [node name="Player" parent="." unique_id=1798834006 groups=["player"] instance=ExtResource("2_bo1nx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1801081, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.008285046, 1.1801081, 0.73973393)
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="." unique_id=1290107885]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.7349019)
@@ -123,7 +123,7 @@ texture_filter = 0
 texture = ExtResource("5_kry3j")
 
 [node name="Monster" parent="." unique_id=980809512 instance=ExtResource("9_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4160156, 0.8013191, -18.865553)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.230291, 0.8013191, -20.75578)
 wander_radius = 20.0
 wander_pause_max = 2.0
 

@@ -10,6 +10,9 @@ var wander_target : Vector3
 var wander_timer : float = 0.0
 var home_position : Vector3
 
+@onready var debug_mesh_instance = MeshInstance3D.new()
+var debug_mesh = ImmediateMesh.new()
+
 @onready var nav_agent = $NavigationAgent3D
 
 var current_patrol_index : int = 0
@@ -29,7 +32,7 @@ var lost_sight_timer : float = 0.0
 
 @export var vision_fov_degrees : float = 40.0
 @export var vision_range : float = 30.0
-@export var hearing_range_walk : float = 6.0
+@export var hearing_range_sneak : float = 0.0
 @export var hearing_range_run : float = 14.0
 @export var hearing_range_sprint : float = 24.0
 @export var gravity_amount : float = 9.8
@@ -41,12 +44,16 @@ var lost_sight_timer : float = 0.0
 var player : CharacterBody3D = null
 var last_known_position : Vector3
 
+@export var show_debug_vision : bool = true
+
 func _ready() -> void:
 	player = get_tree().get_first_node_in_group("player")
 	home_position = global_position
 	await get_tree().physics_frame
 	await get_tree().physics_frame
 	_pick_new_wander_target()
+	debug_mesh_instance.mesh = debug_mesh
+	add_child(debug_mesh_instance)
 
 func _physics_process(delta: float) -> void:
 	print("Physics process running, state: ", state)
@@ -80,7 +87,7 @@ func _physics_process(delta: float) -> void:
 			
 			var distance_to_player = global_position.distance_to(player.global_position)
 			if distance_to_player <= bite_range and can_bite:
-				_bite_player()   # <- the CALL happens here, inside CHASE
+				_bite_player()
 			
 			if _can_see_player() or _can_hear_player():
 				lost_sight_timer = 0.0
@@ -146,18 +153,22 @@ func _can_see_player() -> bool:
 
 	return result.is_empty() or result.collider == player
 
+func _process(delta: float) -> void:
+	if show_debug_vision:
+		_draw_vision_cone()
+
 func _can_hear_player() -> bool:
 	if not player:
 		return false
 
 	var distance = global_position.distance_to(player.global_position)
-	var required_range = hearing_range_walk
+	var required_range = hearing_range_sneak
 
 	match player.current_move_state:
 		player.MoveState.WALK:
-			required_range = hearing_range_walk
-		player.MoveState.SNEAK:
 			required_range = hearing_range_run
+		player.MoveState.SNEAK:
+			required_range = hearing_range_sneak
 		player.MoveState.SPRINT:
 			required_range = hearing_range_sprint
 
@@ -205,18 +216,12 @@ func _bite_player() -> void:
 	
 	can_bite = false
 	InfectionManager.apply_time_penalty(bite_time_penalty)
-
-	# play a bite sound/animation here if you have one
-
+	_pick_flee_target()
 	state = State.FLEE
 	flee_timer = flee_duration
 
 func _flee_movement(delta: float) -> void:
 	flee_timer -= delta
-
-	# recalculate flee target periodically, not every frame (cheaper, avoids jitter)
-	if flee_timer > 0 and (nav_agent.target_position == Vector3.ZERO or global_position.distance_to(nav_agent.target_position) < 1.0):
-		_pick_flee_target()
 
 	var next_pos = nav_agent.get_next_path_position()
 	var direction = (next_pos - global_position)
@@ -247,6 +252,7 @@ func _pick_new_wander_target() -> void:
 	wander_timer = randf_range(wander_pause_min, wander_pause_max)
 
 func _face_direction(target_pos: Vector3, delta: float, rotation_speed: float = 8.0) -> void:
+	
 	var direction = target_pos - global_position
 	direction.y = 0
 	if direction.length() < 0.01:
@@ -254,3 +260,35 @@ func _face_direction(target_pos: Vector3, delta: float, rotation_speed: float = 
 
 	var target_rotation = atan2(direction.x, direction.z)
 	rotation.y = lerp_angle(rotation.y, target_rotation, delta * rotation_speed)
+
+func _draw_vision_cone() -> void:
+	debug_mesh.clear_surfaces()
+	debug_mesh.surface_begin(Mesh.PRIMITIVE_LINES)
+
+	var segments = 20
+	var half_fov = deg_to_rad(vision_fov_degrees / 2.0)
+	var forward = global_transform.basis.z
+
+	for i in range(segments):
+		var angle1 = -half_fov + (2.0 * half_fov * i / segments)
+		var angle2 = -half_fov + (2.0 * half_fov * (i + 1) / segments)
+
+		var dir1 = forward.rotated(Vector3.UP, angle1)
+		var dir2 = forward.rotated(Vector3.UP, angle2)
+
+		var p1 = global_position + dir1 * vision_range
+		var p2 = global_position + dir2 * vision_range
+
+		# arc segment
+		debug_mesh.surface_add_vertex(to_local(p1))
+		debug_mesh.surface_add_vertex(to_local(p2))
+
+	# two edge lines from origin to cone edges
+	var edge1 = global_position + forward.rotated(Vector3.UP, -half_fov) * vision_range
+	var edge2 = global_position + forward.rotated(Vector3.UP, half_fov) * vision_range
+	debug_mesh.surface_add_vertex(Vector3.ZERO)
+	debug_mesh.surface_add_vertex(to_local(edge1))
+	debug_mesh.surface_add_vertex(Vector3.ZERO)
+	debug_mesh.surface_add_vertex(to_local(edge2))
+
+	debug_mesh.surface_end()
