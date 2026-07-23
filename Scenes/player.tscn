@@ -6,9 +6,10 @@
 [ext_resource type="Texture2D" uid="uid://doulweg88fo4u" path="res://Textures/holding_biggerpill.png" id="3_tx1dd"]
 [ext_resource type="Texture2D" uid="uid://b30uruai4ugsf" path="res://Textures/idle_lighterAnimt.png" id="3_x3wgy"]
 [ext_resource type="AudioStream" uid="uid://5yibscmpicur" path="res://Textures/Item_pickup.mp3" id="4_fkybt"]
-[ext_resource type="Texture2D" uid="uid://bem2f1i3k6shi" path="res://Textures/picking_up_animation_sprite_01-Sheet-export.png" id="4_gymyn"]
+[ext_resource type="Texture2D" uid="uid://bg6bo5n3yw6uj" path="res://Textures/try_grab_arm_frame.png" id="4_ukyrk"]
 [ext_resource type="AudioStream" uid="uid://4hfvf6w4ngt7" path="res://Textures/chokeDeath.mp3" id="4_vgqql"]
 [ext_resource type="Theme" uid="uid://dir8matgs65dq" path="res://Textures/Text.tres" id="5_3smsa"]
+[ext_resource type="Texture2D" uid="uid://c4d3sbr1id7dl" path="res://Textures/grabbing_arm_frame.png" id="5_7dp3o"]
 [ext_resource type="Shader" uid="uid://c6nbgm31yrir7" path="res://Textures/Effects.gdshader" id="7_f1ek2"]
 [ext_resource type="Theme" uid="uid://bijq1jftnabn5" path="res://Textures/TextGame.tres" id="7_pu2lt"]
 [ext_resource type="FontFile" uid="uid://du1sd7rr3ytc4" path="res://Textures/VCR_OSD_MONO_1.001.ttf" id="8_8erm5"]
@@ -16,46 +17,6 @@
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_g4v7s"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1agnw"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ukyrk"]
-atlas = ExtResource("4_gymyn")
-region = Rect2(2880, 0, 320, 320)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_7dp3o"]
-atlas = ExtResource("4_gymyn")
-region = Rect2(2560, 0, 320, 320)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_h4iuc"]
-atlas = ExtResource("4_gymyn")
-region = Rect2(2240, 0, 320, 320)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_fd4e3"]
-atlas = ExtResource("4_gymyn")
-region = Rect2(1920, 0, 320, 320)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_qqcod"]
-atlas = ExtResource("4_gymyn")
-region = Rect2(1600, 0, 320, 320)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_igrcy"]
-atlas = ExtResource("4_gymyn")
-region = Rect2(1280, 0, 320, 320)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_fs7ks"]
-atlas = ExtResource("4_gymyn")
-region = Rect2(960, 0, 320, 320)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_l6n3p"]
-atlas = ExtResource("4_gymyn")
-region = Rect2(640, 0, 320, 320)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_olqyp"]
-atlas = ExtResource("4_gymyn")
-region = Rect2(0, 0, 320, 320)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_wpjfl"]
-atlas = ExtResource("4_gymyn")
-region = Rect2(320, 0, 320, 320)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pu2lt"]
 atlas = ExtResource("3_3smsa")
@@ -93,38 +54,14 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ukyrk")
+"texture": ExtResource("4_ukyrk")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_7dp3o")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_h4iuc")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_fd4e3")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_qqcod")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_igrcy")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_fs7ks")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_l6n3p")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_olqyp")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_wpjfl")
+"texture": ExtResource("5_7dp3o")
 }],
 "loop": 0,
 "name": &"PickUp",
-"speed": 15.0
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -155,16 +92,16 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_g4v7s"]
-shader = ExtResource("7_f1ek2")
-shader_parameter/infection_level = 0.0
-shader_parameter/blur_amount = 0.008
-shader_parameter/vignette_strength = 1.5
-shader_parameter/vignette_color = Color(0.3, 0, 0, 1)
-
 [sub_resource type="Theme" id="Theme_ukyrk"]
 default_font = ExtResource("8_8erm5")
 default_font_size = 27
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g4v7s"]
+shader = ExtResource("7_f1ek2")
+shader_parameter/infection_level = 0.0
+shader_parameter/blur_amount = 0.00400000019
+shader_parameter/vignette_strength = 1.0000000475
+shader_parameter/vignette_color = Color(0.3, 0, 0, 1)
 
 [node name="Player" type="CharacterBody3D" unique_id=1798834006 groups=["Player"]]
 script = ExtResource("1_v0iea")
@@ -191,7 +128,9 @@ transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0.57352144, -0.20384514
 shaded = true
 texture_filter = 0
 sprite_frames = SubResource("SpriteFrames_fkybt")
-animation = &"litLighter"
+animation = &"PickUp"
+frame = 1
+frame_progress = 1.0
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Head" unique_id=1879819679]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1877026, -0.32095587, -0.5131495)
@@ -199,6 +138,44 @@ visible = false
 light_color = Color(0.94509804, 0.654902, 0, 1)
 omni_range = 8.195
 omni_attenuation = 0.406
+
+[node name="InventoryUI" type="CanvasLayer" parent="." unique_id=847391552]
+
+[node name="Slot1Icon" type="TextureRect" parent="InventoryUI" unique_id=1862104810]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -126.0
+offset_top = -112.0
+offset_right = -28.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Slot2Icon" type="TextureRect" parent="InventoryUI" unique_id=1178497164]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -25.0
+offset_top = -133.0
+offset_right = 115.0
+grow_horizontal = 2
+grow_vertical = 0
+expand_mode = 1
+
+[node name="TimerUI" type="CanvasLayer" parent="." unique_id=1537132126]
+
+[node name="TimerLabel" type="Label" parent="TimerUI" unique_id=1548168591]
+offset_left = 83.0
+offset_top = 952.0
+offset_right = 262.0
+offset_bottom = 1016.0
+theme = SubResource("Theme_ukyrk")
+vertical_alignment = 2
 
 [node name="PromptUI" type="CanvasLayer" parent="." unique_id=2119018297]
 
@@ -232,34 +209,6 @@ text = "You died..."
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="InventoryUI" type="CanvasLayer" parent="." unique_id=847391552]
-
-[node name="Slot1Icon" type="TextureRect" parent="InventoryUI" unique_id=1862104810]
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -126.0
-offset_top = -112.0
-offset_right = -28.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="Slot2Icon" type="TextureRect" parent="InventoryUI" unique_id=1178497164]
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -25.0
-offset_top = -133.0
-offset_right = 115.0
-grow_horizontal = 2
-grow_vertical = 0
-expand_mode = 1
-
 [node name="EffectsLayer" type="CanvasLayer" parent="." unique_id=1965722073]
 
 [node name="EffectsRect" type="ColorRect" parent="EffectsLayer" unique_id=2047383058]
@@ -272,16 +221,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="TimerUI" type="CanvasLayer" parent="." unique_id=1537132126]
-
-[node name="TimerLabel" type="Label" parent="TimerUI" unique_id=1548168591]
-offset_left = 83.0
-offset_top = 952.0
-offset_right = 262.0
-offset_bottom = 1016.0
-theme = SubResource("Theme_ukyrk")
-vertical_alignment = 2
-
 [node name="ItemPickup" type="AudioStreamPlayer" parent="." unique_id=2130829684]
 stream = ExtResource("4_fkybt")
 volume_db = 3.0
@@ -293,3 +232,6 @@ pitch_scale = 0.86
 [node name="UseSFX" type="AudioStreamPlayer" parent="." unique_id=462159925]
 
 [node name="LighterFlickerTimer" type="Timer" parent="." unique_id=2108438216]
+
+[node name="AudioListener3D" type="AudioListener3D" parent="." unique_id=1678659185]
+current = true

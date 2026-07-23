@@ -51,6 +51,7 @@ var equipped_item : Item = null
 var item_active : bool = false
 var is_dying : bool = false
 
+
 var death_start_head_y : float = 0.0
 var death_target_head_y : float = 0.0
 
@@ -200,11 +201,13 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("slot_1"):
 		current_slot = 0
 		_equip_current_slot()
-		_update_inventory_ui()   # <- make sure this is here too, so the highlight moves correctly
+		_update_inventory_ui()
+		item_light.visible = false
 	if Input.is_action_just_pressed("slot_2"):
 		current_slot = 1
 		_equip_current_slot()
-		_update_inventory_ui()   # <- and here
+		_update_inventory_ui()
+		item_light.visible = false
 	
 	if Input.is_action_just_pressed("interact") and current_interactable:
 		current_interactable.interact(self)

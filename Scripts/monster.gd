@@ -3,6 +3,10 @@ extends CharacterBody3D
 enum State { PATROL, INVESTIGATE, CHASE, FLEE }
 var state : State = State.PATROL
 
+@onready var anim_player = $MonsterModel/AnimationPlayer
+var previous_state : State = State.PATROL
+
+@export var idle_velocity_threshold : float = 0.3
 @export var wander_radius : float = 8.0
 @export var wander_pause_min : float = 1.0
 @export var wander_pause_max : float = 4.0
@@ -22,6 +26,7 @@ var current_patrol_index : int = 0
 @export var bite_time_penalty : float = 60.0   # seconds removed from InfectionManager's timer
 @export var flee_duration : float = 5.0        # how long it runs away after biting
 var can_bite : bool = true
+var is_biting : bool = false
 var flee_timer : float = 0.0
 
 @export var investigate_duration : float = 8.0
@@ -32,9 +37,9 @@ var lost_sight_timer : float = 0.0
 
 @export var vision_fov_degrees : float = 40.0
 @export var vision_range : float = 30.0
-@export var hearing_range_sneak : float = 0.0
-@export var hearing_range_run : float = 14.0
-@export var hearing_range_sprint : float = 24.0
+@export var hearing_range_sneak : float = 0.5
+@export var hearing_range_run : float = 8.0
+@export var hearing_range_sprint : float = 10.0
 @export var gravity_amount : float = 9.8
 
 @export var speed_vs_walk : float = 1.5
@@ -54,27 +59,40 @@ func _ready() -> void:
 	_pick_new_wander_target()
 	debug_mesh_instance.mesh = debug_mesh
 	add_child(debug_mesh_instance)
+	anim_player.play("WalkingBetter")
+	anim_player.animation_finished.connect(_on_anim_finished)
 
 func _physics_process(delta: float) -> void:
-	print("Physics process running, state: ", state)
+	if is_biting:
+		if state == State.FLEE:
+			_flee_movement(delta)
+		return
+	
 	if not is_on_floor():
 		velocity.y -= gravity_amount * delta
 	else:
 		velocity.y = 0
-
+	
+	if state != previous_state:
+		previous_state = state
+	
 	match state:
 		State.PATROL:
 			_patrol_movement(delta)
+			anim_player.speed_scale = patrol_speed / patrol_speed
 			var sees = _can_see_player()
 			var hears = _can_hear_player()
 			if sees or hears:
 				state = State.CHASE
 				last_known_position = player.global_position
 		State.CHASE:
+			if is_biting:
+				return   
 			nav_agent.target_position = player.global_position
 			var next_path_position = nav_agent.get_next_path_position()
 			var current_speed = _get_current_speed()
-
+			anim_player.speed_scale = clamp(current_speed / patrol_speed, 0.5, 1.8)
+			
 			var direction = (next_path_position - global_position)
 			direction.y = 0
 			direction = direction.normalized()
@@ -101,6 +119,9 @@ func _physics_process(delta: float) -> void:
 			
 		State.FLEE:
 			_flee_movement(delta)
+			if not is_biting:
+				anim_player.play("WalkingBetter")   # <- ADD the guard here too
+				anim_player.speed_scale = _get_current_speed() / patrol_speed
 		State.INVESTIGATE:
 			if investigate_timer <= 0:
 				investigate_timer = investigate_duration
@@ -123,37 +144,31 @@ func _physics_process(delta: float) -> void:
 			elif investigate_timer <= 0:
 				state = State.PATROL
 				investigate_timer = 0.0
-
+	_update_movement_animation()
 func _can_see_player() -> bool:
 	if not player:
-		print("VISION: no player ref")
 		return false
 
 	var to_player = player.global_position - global_position
 	var distance = to_player.length()
-	print("VISION: distance=", distance, " range=", vision_range)
 
 	if distance > vision_range:
-		print("VISION: too far")
 		return false
 
 	var forward = -global_transform.basis.z
 	var angle_to_player = rad_to_deg(forward.angle_to(to_player.normalized()))
-	print("VISION: angle=", angle_to_player, " max=", vision_fov_degrees / 2.0)
 
 	if angle_to_player > vision_fov_degrees / 2.0:
-		print("VISION: outside FOV")
 		return false
 
 	var space_state = get_world_3d().direct_space_state
 	var query = PhysicsRayQueryParameters3D.create(global_position, player.global_position)
 	query.exclude = [self]
 	var result = space_state.intersect_ray(query)
-	print("VISION: raycast result=", result)
 
 	return result.is_empty() or result.collider == player
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if show_debug_vision:
 		_draw_vision_cone()
 
@@ -172,14 +187,9 @@ func _can_hear_player() -> bool:
 		player.MoveState.SPRINT:
 			required_range = hearing_range_sprint
 
-	print("HEARING CHECK: dist=", distance, " required=", required_range, " move_state=", player.current_move_state)
-
-	return distance <= required_range
-
 	return distance <= required_range
 
 func _get_current_speed() -> float:
-
 	if not player:
 		return 3.0
 
@@ -187,7 +197,7 @@ func _get_current_speed() -> float:
 		player.MoveState.SNEAK:
 			return player.sneak_speed * speed_vs_walk
 		player.MoveState.WALK:
-			return player.walk_speed * speed_vs_run  # tune base multiplier to your actual run speed var
+			return player.walk_speed * speed_vs_run 
 		player.MoveState.SPRINT:
 			return player.sprint_speed * speed_vs_sprint
 
@@ -200,6 +210,8 @@ func _patrol_movement(delta: float) -> void:
 	direction.y = 0
 
 	if direction.length() < 0.3:
+		velocity.x = 0
+		velocity.z = 0
 		wander_timer -= delta
 		if wander_timer <= 0:
 			_pick_new_wander_target()
@@ -213,15 +225,27 @@ func _patrol_movement(delta: float) -> void:
 	_face_direction(next_pos, delta)
 
 func _bite_player() -> void:
-	
+	print("=== BITE START ===")
 	can_bite = false
+	is_biting = true
 	InfectionManager.apply_time_penalty(bite_time_penalty)
-	_pick_flee_target()
+	anim_player.speed_scale = 1.0
+	print("Has bite animation: ", anim_player.has_animation("bite"))
+	print("Animation list: ", anim_player.get_animation_list())
+	anim_player.play("bite")
+	print("Bite animation length: ", anim_player.get_animation("bite").length)
+	print("Bite animation loop mode: ", anim_player.get_animation("bite").loop_mode)
+	print("Current animation after play(): ", anim_player.current_animation)
+	print("Is playing: ", anim_player.is_playing())
 	state = State.FLEE
 	flee_timer = flee_duration
+	_pick_flee_target()
+	$AudioStreamPlayer3D.play()
 
 func _flee_movement(delta: float) -> void:
 	flee_timer -= delta
+	if nav_agent.is_target_reached():
+		_pick_flee_target()
 
 	var next_pos = nav_agent.get_next_path_position()
 	var direction = (next_pos - global_position)
@@ -292,3 +316,33 @@ func _draw_vision_cone() -> void:
 	debug_mesh.surface_add_vertex(to_local(edge2))
 
 	debug_mesh.surface_end()
+
+func _update_animation() -> void:
+	match state:
+		State.PATROL:
+			anim_player.play("WalkingBetter")
+		State.CHASE:
+			anim_player.play("WalkingBetter")
+		State.FLEE:
+			anim_player.play("WalkingBetter")
+		State.INVESTIGATE:
+			anim_player.play("WalkingBetter")
+
+func _on_anim_finished(anim_name: String) -> void:
+	print("=== ANIM FINISHED: ", anim_name, " ===")
+	if anim_name == "bite":
+		is_biting = false
+		anim_player.play("WalkingBetter")
+
+func _update_movement_animation() -> void:
+	if is_biting:
+		return
+
+	var horizontal_speed = Vector2(velocity.x, velocity.z).length()
+
+	if horizontal_speed < idle_velocity_threshold:
+		if anim_player.current_animation != "idle":
+			anim_player.play("idle")
+	else:
+		if anim_player.current_animation != "WalkingBetter":
+			anim_player.play("WalkingBetter")
